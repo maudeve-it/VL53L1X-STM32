@@ -1,0 +1,51 @@
+
+
+  Displ_Init(Displ_Orientat_90);			// (mandatory) initialize display controller - set orientation parameter as per your needs
+  Displ_CLS(BLACK);						// clear the screen - BLACK or any other color you prefer
+  Displ_BackLight('I');  					// (mandatory) initialize backlight
+
+
+
+  uint8_t status;
+  status=VL53L1_Init();
+
+  uint16_t Distance;
+  uint16_t SignalRate;
+  uint16_t AmbientRate;
+  uint16_t SpadNum;
+  uint8_t RangeStatus;
+  uint8_t dataReady =0;
+
+  status = VL53L1X_StartRanging(TOF_ADDR);   /* This function has to be called to enable the ranging */
+  while (1)
+  {
+	  while (dataReady == 0){
+		  status = VL53L1X_CheckForDataReady(TOF_ADDR, &dataReady);
+		  HAL_Delay(2);
+	  }
+	  dataReady = 0;
+	  status = VL53L1X_GetRangeStatus(TOF_ADDR, &RangeStatus);
+	  status = VL53L1X_GetDistance(TOF_ADDR, &Distance);
+	  status = VL53L1X_GetSignalRate(TOF_ADDR, &SignalRate);
+	  status = VL53L1X_GetAmbientRate(TOF_ADDR, &AmbientRate);
+	  status = VL53L1X_GetSpadNb(TOF_ADDR, &SpadNum);
+	  status = VL53L1X_ClearInterrupt(TOF_ADDR); /* clear interrupt has to be called to enable next interrupt*/
+
+	  char riga[20];
+	  sprintf(riga,"Range Status:%6d",RangeStatus);
+	  Displ_WString(10, 15, riga, Font12, 1, WHITE, BLACK);
+	  sprintf(riga,"Distance:    %6d",Distance);
+	  Displ_WString(10, 30, riga, Font12, 1, WHITE, BLACK);
+	  sprintf(riga,"Signal Rate: %6d",SignalRate);
+	  Displ_WString(10, 45, riga, Font12, 1, WHITE, BLACK);
+	  sprintf(riga,"Ambient Rate:%6d",AmbientRate);
+	  Displ_WString(10, 60, riga, Font12, 1, WHITE, BLACK);
+	  sprintf(riga,"SpadNb:      %6d",SpadNum);
+	  Displ_WString(10, 75, riga, Font12, 1, WHITE, BLACK);
+	  if (status) {
+		  sprintf(riga,"STATUS:       %d",status);
+		  Displ_WString(20, 75, riga, Font12, 1, RED, BLACK);
+	  }
+  }  // fine while (1)
+
+
