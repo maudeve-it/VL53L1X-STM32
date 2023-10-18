@@ -45,6 +45,7 @@
 	  if (status) {
 		  sprintf(riga,"STATUS:       %d",status);
 		  Displ_WString(20, 75, riga, Font12, 1, RED, BLACK);
+		  HAL_Delay(2000);
 	  }
   }  // fine while (1)
 
