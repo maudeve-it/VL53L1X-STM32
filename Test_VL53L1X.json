@@ -1,0 +1,1173 @@
+[
+    {
+        "id": "8381c865.236028",
+        "type": "subflow",
+        "name": "Single value",
+        "info": "The 'single value' subflow allows to extract data from processing node.\r\n\r\n * Filter Data to extract only one variable after the \"processing node\" step .\r\n * Modify the message to fit with standard widgets such as gauges.\r\n * Limit the number of messages to a maximum of 10 msg per second.\r\n\r\n### **Input**\r\n\r\nThe subflow 'single value' takes in input the `msg.payload`\r\nfrom the processing output. All the messages sent by the processing node have the same structure.\r\n\r\n    \"payload\": {\r\n        \"groupname\": \"Snapshot2\",\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ],\r\n        \"variablename\": \"int2\"\r\n      }\r\n    }\r\n\r\n### **Filter on selected variable**\r\nSeveral messages are sent by the processing node for each variable, so the first step of this 'single value' subflow is to filter and keep only messages related to the selected variable.\r\nThe 'filter variable' node will only keep messages with the right `variablename` key.\r\n\r\n### **Extract duplets table**\r\n\r\nThe received message is an Object containing {groupname, variabledata[array], variablename}.  \r\nThe array contains two variables :\r\n - `y` the value \r\n - `x` the time\r\n\r\nA single message contains multiple pairs of values extract at a regular time interval.\r\nThe time interval depends on the acquisition frequency.\r\nWith the 'change' node and the `set` property, the `msg.payload` is set to \r\n`msg.payload.variabledata`, only the data variable array is set into msg.payload.\r\n\r\n    \"payload\": {\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ]\r\n    }\r\n\r\n### **Split duplets table**\r\n\r\nThe data variable array is split with a length of one in smaller objects by the 'split' node.\r\nEach new object contains two subvariables : `y` and `x`.\r\n\r\n    \"payload\": {\r\n        \"y\": \"9\",\r\n        \"x\": \"1567509421459\"\r\n    }\r\n\r\n\r\n### **Limit the number of messages**\r\n\r\nThe 'delay' node allows to limit the maximum number of message per second.\r\nIn the 'single value' subflow, one message is extracted per second.\r\n\r\n>_Be careful, a dashboard saturation risk exists if too many messages are received per second._\r\n\r\n### **Extract only y values**\r\n\r\nThe `msg.payload` is set to `msg.payload.y` with the `set` property. \r\nOnly `y` variable is set into msg.payload as single value.\r\n\r\n    \"payload\": { \r\n        \"y\": \"9\" \r\n    }\r\n\r\n### **Output** \r\n\r\nSome widgets such as the gauge and the text node are using the `msg.payload` property.  \r\nThe output node is linked to a gauge that allows to see the evolution \r\nof the `y` variable as a function of time.\r\n\r\n\r\n![subflow_gauge](images/subflow_gauge.png)\r\n\r\n### **Details**\r\n\r\nNote : The debug node allows to see clearly and easily the \r\nmessage at the node output.  \r\n\r\n\r\n> More details on : [Node-Red](https://nodered.org/docs/user-guide/editor/workspace/subflows)\r\n\r\n\r\n-------\r\n\r\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "3c5ffe0d.9063b2"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 780,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "66397fd3.d8111",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "varfilter",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-filter",
+                    "label": {
+                        "en-US": "Variable"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            }
+        ],
+        "color": "#3CB4E6"
+    },
+    {
+        "id": "3c5ffe0d.9063b2",
+        "type": "switch",
+        "z": "8381c865.236028",
+        "name": "filter variable",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "varfilter",
+                "vt": "env"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "4e5ba7a5.14dec8"
+            ]
+        ]
+    },
+    {
+        "id": "4e5ba7a5.14dec8",
+        "type": "change",
+        "z": "8381c865.236028",
+        "name": "keep only table of duplets",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.variabledata",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 60,
+        "wires": [
+            [
+                "42bc6ed.5b20d9"
+            ]
+        ]
+    },
+    {
+        "id": "42bc6ed.5b20d9",
+        "type": "split",
+        "z": "8381c865.236028",
+        "name": "Split a table[1..n] of duplets in n msg of single duplet",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 800,
+        "y": 60,
+        "wires": [
+            [
+                "8b8ddb84.6fb208"
+            ]
+        ]
+    },
+    {
+        "id": "8b8ddb84.6fb208",
+        "type": "delay",
+        "z": "8381c865.236028",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "66397fd3.d8111"
+            ]
+        ]
+    },
+    {
+        "id": "66397fd3.d8111",
+        "type": "change",
+        "z": "8381c865.236028",
+        "name": "keep only value and delete timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.y",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2da1ece4.dd0624",
+        "type": "tab",
+        "label": "VL53L1X_test",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "b58234c9.060008",
+        "type": "ui_button",
+        "z": "2da1ece4.dd0624",
+        "name": "",
+        "group": "571b830c.a465ac",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "play_arrow",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "topicType": "str",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "2282f8ce.90be68",
+                "4be25509.4d974c"
+            ]
+        ]
+    },
+    {
+        "id": "1d37b6aa.7a7719",
+        "type": "ui_button",
+        "z": "2da1ece4.dd0624",
+        "name": "",
+        "group": "571b830c.a465ac",
+        "order": 4,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "stop",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "topicType": "str",
+        "x": 170,
+        "y": 200,
+        "wires": [
+            [
+                "2282f8ce.90be68",
+                "4be25509.4d974c"
+            ]
+        ]
+    },
+    {
+        "id": "619e4e3.0a86cb",
+        "type": "acquisition in",
+        "z": "2da1ece4.dd0624",
+        "name": "ST-Link",
+        "probeconfig": "53e07653.b1fdf8",
+        "x": 170,
+        "y": 480,
+        "wires": [
+            [
+                "2d712826.561b88"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "4484f652.31b558",
+        "type": "acquisition out",
+        "z": "2da1ece4.dd0624",
+        "name": "ST-Link",
+        "probeconfig": "53e07653.b1fdf8",
+        "x": 1040,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f04f9b65.b50178",
+        "type": "subflow:8381c865.236028",
+        "z": "2da1ece4.dd0624",
+        "name": "AmbientRate",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "AmbientRate",
+                "type": "str"
+            }
+        ],
+        "x": 710,
+        "y": 600,
+        "wires": [
+            [
+                "cfff6af6.98bbc8"
+            ]
+        ]
+    },
+    {
+        "id": "cfff6af6.98bbc8",
+        "type": "ui_gauge",
+        "z": "2da1ece4.dd0624",
+        "name": "",
+        "group": "571b830c.a465ac",
+        "order": 17,
+        "width": 4,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Ambient Rate",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "20000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 1060,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "2d712826.561b88",
+        "type": "processing",
+        "z": "2da1ece4.dd0624",
+        "groupname": "grp-data_VL32L1X",
+        "groupid": "2282f8ce.90be68",
+        "expressions": [],
+        "statistics": [],
+        "logmode": "no",
+        "logformat": "stcm",
+        "x": 430,
+        "y": 480,
+        "wires": [
+            [
+                "f04f9b65.b50178",
+                "cfe22206.0a0a9",
+                "20f4922d.a2b87e",
+                "5b58178b.4ce278",
+                "294e4079.894ed",
+                "158b694a.5b49f7"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "2282f8ce.90be68",
+        "type": "variables",
+        "z": "2da1ece4.dd0624",
+        "groupname": "grp-data_VL32L1X",
+        "accesspoint": "0",
+        "execonfig": "55fcfdae.d436b4",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "AmbientRate",
+        "triggerthreshold": "",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1700579139647,
+        "openStatus": true,
+        "x": 450,
+        "y": 200,
+        "wires": [
+            [
+                "4484f652.31b558"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "cfe22206.0a0a9",
+        "type": "subflow:8381c865.236028",
+        "z": "2da1ece4.dd0624",
+        "name": "SignalRate",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "SignalRate",
+                "type": "str"
+            }
+        ],
+        "x": 710,
+        "y": 540,
+        "wires": [
+            [
+                "e6782c16.4a888"
+            ]
+        ]
+    },
+    {
+        "id": "e6782c16.4a888",
+        "type": "ui_gauge",
+        "z": "2da1ece4.dd0624",
+        "name": "",
+        "group": "571b830c.a465ac",
+        "order": 10,
+        "width": 4,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Signal Rate",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "20000",
+        "colors": [
+            "#b50100",
+            "#e6e600",
+            "#00b505"
+        ],
+        "seg1": "1000",
+        "seg2": "6000",
+        "x": 1050,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "77d9d0bd.0fbae",
+        "type": "ui_button",
+        "z": "2da1ece4.dd0624",
+        "name": "",
+        "group": "571b830c.a465ac",
+        "order": 6,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 690,
+        "y": 300,
+        "wires": [
+            [
+                "59fa5d91.5dd984",
+                "8617f31c.2de14"
+            ]
+        ]
+    },
+    {
+        "id": "59fa5d91.5dd984",
+        "type": "ui_chartst",
+        "z": "2da1ece4.dd0624",
+        "group": "571b830c.a465ac",
+        "name": "Distance",
+        "order": 8,
+        "width": 22,
+        "height": 8,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 1040,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "8617f31c.2de14",
+        "type": "ui_chartst",
+        "z": "2da1ece4.dd0624",
+        "group": "571b830c.a465ac",
+        "name": "StdDev",
+        "order": 11,
+        "width": 15,
+        "height": 6,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 1040,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "49b97d01.e9f694",
+        "type": "ui_write",
+        "z": "2da1ece4.dd0624",
+        "group": "571b830c.a465ac",
+        "name": "set parameters",
+        "order": 3,
+        "width": 6,
+        "height": 3,
+        "x": 720,
+        "y": 140,
+        "wires": [
+            [
+                "4484f652.31b558"
+            ]
+        ]
+    },
+    {
+        "id": "4be25509.4d974c",
+        "type": "variables",
+        "z": "2da1ece4.dd0624",
+        "groupname": "grp-param_VL32L1X",
+        "accesspoint": 0,
+        "execonfig": "973f6089.f3c3b",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "TimingBudget",
+        "triggerthreshold": "",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1700579165671,
+        "openStatus": true,
+        "x": 460,
+        "y": 140,
+        "wires": [
+            [
+                "49b97d01.e9f694"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7d770afe.dad084",
+        "type": "ui_led",
+        "z": "2da1ece4.dd0624",
+        "order": 16,
+        "group": "571b830c.a465ac",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#008000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffff00",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#ffa500",
+                "value": "2",
+                "valueType": "num"
+            },
+            {
+                "color": "#ff0000",
+                "value": "4",
+                "valueType": "num"
+            },
+            {
+                "color": "#800080",
+                "value": "7",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "255",
+                "valueType": "num"
+            },
+            {
+                "color": "#00a8e0",
+                "value": "99",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "Range Status",
+        "x": 1060,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "20f4922d.a2b87e",
+        "type": "subflow:8381c865.236028",
+        "z": "2da1ece4.dd0624",
+        "name": "RangeStatus",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "RangeStatus",
+                "type": "str"
+            }
+        ],
+        "x": 710,
+        "y": 480,
+        "wires": [
+            [
+                "7d770afe.dad084"
+            ]
+        ]
+    },
+    {
+        "id": "bef8d7c7.37cad8",
+        "type": "ui_text",
+        "z": "2da1ece4.dd0624",
+        "group": "571b830c.a465ac",
+        "order": 13,
+        "width": 2,
+        "height": 2,
+        "name": "ErrorPerc",
+        "label": "Errors %",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 1040,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "5b58178b.4ce278",
+        "type": "subflow:8381c865.236028",
+        "z": "2da1ece4.dd0624",
+        "name": "ErrorPerc",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "ErrorPerc",
+                "type": "str"
+            }
+        ],
+        "x": 700,
+        "y": 660,
+        "wires": [
+            [
+                "bef8d7c7.37cad8"
+            ]
+        ]
+    },
+    {
+        "id": "294e4079.894ed",
+        "type": "switch",
+        "z": "2da1ece4.dd0624",
+        "name": "Filter Distance and  avgDist",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Distance",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "avgDist",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 760,
+        "y": 420,
+        "wires": [
+            [
+                "59fa5d91.5dd984"
+            ],
+            [
+                "59fa5d91.5dd984"
+            ]
+        ]
+    },
+    {
+        "id": "158b694a.5b49f7",
+        "type": "switch",
+        "z": "2da1ece4.dd0624",
+        "name": "Filter StdDev",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "StdDev",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 710,
+        "y": 360,
+        "wires": [
+            [
+                "8617f31c.2de14"
+            ]
+        ]
+    },
+    {
+        "id": "571b830c.a465ac",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "96793839.6c8518",
+        "order": 1,
+        "disp": false,
+        "width": 22,
+        "collapse": false
+    },
+    {
+        "id": "53e07653.b1fdf8",
+        "type": "probe",
+        "probeid": "066BFF544856846687095720",
+        "probename": "ST-Link v2-1B (...95720)",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J42",
+        "connectionType": "tcp"
+    },
+    {
+        "id": "55fcfdae.d436b4",
+        "type": "exe-config",
+        "name": "data_VL32L1X",
+        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug\\test1.elf",
+        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x080045a0",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000ee",
+                "name": "AmbientRate",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x080045b0",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000fc",
+                "name": "avgDist",
+                "type": 9,
+                "checked": true
+            },
+            {
+                "address": "0x200000e8",
+                "name": "Distance",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x20000006",
+                "name": "DistanceMode",
+                "type": 3
+            },
+            {
+                "address": "0x200000f0",
+                "name": "ErrorPerc",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000d8",
+                "name": "hi2c1.Devaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000d4",
+                "name": "hi2c1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x200000e4",
+                "name": "hi2c1.EventCount",
+                "type": 5
+            },
+            {
+                "address": "0x200000cc",
+                "name": "hi2c1.hdmarx",
+                "type": 5
+            },
+            {
+                "address": "0x200000c8",
+                "name": "hi2c1.hdmatx",
+                "type": 5
+            },
+            {
+                "address": "0x200000a4",
+                "name": "hi2c1.Init.AddressingMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "hi2c1.Init.ClockSpeed",
+                "type": 5
+            },
+            {
+                "address": "0x200000a8",
+                "name": "hi2c1.Init.DualAddressMode",
+                "type": 5
+            },
+            {
+                "address": "0x2000009c",
+                "name": "hi2c1.Init.DutyCycle",
+                "type": 5
+            },
+            {
+                "address": "0x200000b0",
+                "name": "hi2c1.Init.GeneralCallMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000b4",
+                "name": "hi2c1.Init.NoStretchMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000a0",
+                "name": "hi2c1.Init.OwnAddress1",
+                "type": 5
+            },
+            {
+                "address": "0x200000ac",
+                "name": "hi2c1.Init.OwnAddress2",
+                "type": 5
+            },
+            {
+                "address": "0x20000094",
+                "name": "hi2c1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x200000d0",
+                "name": "hi2c1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x200000dc",
+                "name": "hi2c1.Memaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000e0",
+                "name": "hi2c1.MemaddSize",
+                "type": 5
+            },
+            {
+                "address": "0x200000d2",
+                "name": "hi2c1.Mode",
+                "type": 2
+            },
+            {
+                "address": "0x200000b8",
+                "name": "hi2c1.pBuffPtr",
+                "type": 5
+            },
+            {
+                "address": "0x200000c4",
+                "name": "hi2c1.PreviousState",
+                "type": 5
+            },
+            {
+                "address": "0x200000d1",
+                "name": "hi2c1.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000be",
+                "name": "hi2c1.XferCount",
+                "type": 3
+            },
+            {
+                "address": "0x200000c0",
+                "name": "hi2c1.XferOptions",
+                "type": 5
+            },
+            {
+                "address": "0x200000bc",
+                "name": "hi2c1.XferSize",
+                "type": 3
+            },
+            {
+                "address": "0x200000f4",
+                "name": "numerrors",
+                "type": 5
+            },
+            {
+                "address": "0x200000ea",
+                "name": "RangeStatus",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000f8",
+                "name": "readCounter",
+                "type": 5
+            },
+            {
+                "address": "0x200000ec",
+                "name": "SignalRate",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x08004588",
+                "name": "status_rtn[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000100",
+                "name": "StdDev",
+                "type": 9,
+                "checked": true
+            },
+            {
+                "address": "0x20000000",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000004",
+                "name": "TimingBudget",
+                "type": 3
+            },
+            {
+                "address": "0x2000029c",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000010",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x0800452c",
+                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
+                "type": 1
+            }
+        ],
+        "expand": false,
+        "filename": "test1.elf",
+        "exeModifiedTime": 1700577961107,
+        "configLastUpdate": 1700579139309
+    },
+    {
+        "id": "973f6089.f3c3b",
+        "type": "exe-config",
+        "name": "param_VL32L1X",
+        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug\\test1.elf",
+        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x080045a0",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000ee",
+                "name": "AmbientRate",
+                "type": 3
+            },
+            {
+                "address": "0x080045b0",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000fc",
+                "name": "avgDist",
+                "type": 9
+            },
+            {
+                "address": "0x200000e8",
+                "name": "Distance",
+                "type": 3
+            },
+            {
+                "address": "0x20000006",
+                "name": "DistanceMode",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x200000f0",
+                "name": "ErrorPerc",
+                "type": 1
+            },
+            {
+                "address": "0x200000d8",
+                "name": "hi2c1.Devaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000d4",
+                "name": "hi2c1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x200000e4",
+                "name": "hi2c1.EventCount",
+                "type": 5
+            },
+            {
+                "address": "0x200000cc",
+                "name": "hi2c1.hdmarx",
+                "type": 5
+            },
+            {
+                "address": "0x200000c8",
+                "name": "hi2c1.hdmatx",
+                "type": 5
+            },
+            {
+                "address": "0x200000a4",
+                "name": "hi2c1.Init.AddressingMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "hi2c1.Init.ClockSpeed",
+                "type": 5
+            },
+            {
+                "address": "0x200000a8",
+                "name": "hi2c1.Init.DualAddressMode",
+                "type": 5
+            },
+            {
+                "address": "0x2000009c",
+                "name": "hi2c1.Init.DutyCycle",
+                "type": 5
+            },
+            {
+                "address": "0x200000b0",
+                "name": "hi2c1.Init.GeneralCallMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000b4",
+                "name": "hi2c1.Init.NoStretchMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000a0",
+                "name": "hi2c1.Init.OwnAddress1",
+                "type": 5
+            },
+            {
+                "address": "0x200000ac",
+                "name": "hi2c1.Init.OwnAddress2",
+                "type": 5
+            },
+            {
+                "address": "0x20000094",
+                "name": "hi2c1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x200000d0",
+                "name": "hi2c1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x200000dc",
+                "name": "hi2c1.Memaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000e0",
+                "name": "hi2c1.MemaddSize",
+                "type": 5
+            },
+            {
+                "address": "0x200000d2",
+                "name": "hi2c1.Mode",
+                "type": 2
+            },
+            {
+                "address": "0x200000b8",
+                "name": "hi2c1.pBuffPtr",
+                "type": 5
+            },
+            {
+                "address": "0x200000c4",
+                "name": "hi2c1.PreviousState",
+                "type": 5
+            },
+            {
+                "address": "0x200000d1",
+                "name": "hi2c1.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000be",
+                "name": "hi2c1.XferCount",
+                "type": 3
+            },
+            {
+                "address": "0x200000c0",
+                "name": "hi2c1.XferOptions",
+                "type": 5
+            },
+            {
+                "address": "0x200000bc",
+                "name": "hi2c1.XferSize",
+                "type": 3
+            },
+            {
+                "address": "0x200000f4",
+                "name": "numerrors",
+                "type": 5
+            },
+            {
+                "address": "0x200000ea",
+                "name": "RangeStatus",
+                "type": 1
+            },
+            {
+                "address": "0x200000f8",
+                "name": "readCounter",
+                "type": 5
+            },
+            {
+                "address": "0x200000ec",
+                "name": "SignalRate",
+                "type": 3
+            },
+            {
+                "address": "0x08004588",
+                "name": "status_rtn[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000100",
+                "name": "StdDev",
+                "type": 9
+            },
+            {
+                "address": "0x20000000",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000004",
+                "name": "TimingBudget",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x2000029c",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000010",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x0800452c",
+                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
+                "type": 1
+            }
+        ],
+        "expand": false,
+        "filename": "test1.elf",
+        "exeModifiedTime": 1700577961107,
+        "configLastUpdate": 1700579165343
+    },
+    {
+        "id": "96793839.6c8518",
+        "type": "ui_tab",
+        "name": "VL51L1X Test",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
