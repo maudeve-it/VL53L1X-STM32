@@ -74,7 +74,7 @@ void VL53L1__test(){
 	//	if (dataReady and !status){
 
 	// is there a new ranging available? //polling via INT pin
-	if (HAL_GPIO_ReadPin(TOF_INT_GPIO_Port, TOF_INT_Pin)){
+	if (HAL_GPIO_ReadPin(TOF_GPIO_GPIO_Port, TOF_GPIO_Pin)){
 		readCounter++;
 
 		status |= VL53L1X_GetRangeStatus(TOF_ADDR, &RangeStatus);
@@ -110,117 +110,4 @@ void VL53L1__test(){
 		HAL_Delay(1000);
 	}
 }
-
-
-/*  con rilevazione tempo via timer
-
-void VL53L1__test(){
-	static uint32_t prevtime=0;
-	static uint16_t curTB=VL53L1__TIMING_BUDGET;
-	static int16_t curCO=VL53L1__CALIB_OFFSET;
-	static uint16_t curDM=VL53L1__DISTANCE_MODE;
-	uint8_t dataReady=0;
-	uint8_t status=0;
-	uint8_t currperc;
-	uint8_t goodRanging=0;
-	uint32_t timing[11] = {0};
-
-	while (!goodRanging) {
-		//keep reading until get readings without error
-
-		TIM3->EGR = 1;
-		HAL_Delay(1);
-		timing[0]=TIM3->CNT;
-		timing[10]=TIM3->CNT;
-
-		//before starting rangings update sensor, if user changed ranging parameters
-		if (TimingBudget!=curTB) {					// update TimingBudget if changed in repTB (from CubeMonitor)
-			status |= VL53L1X_StopRanging(TOF_ADDR);
-			status |= VL53L1X_SetTimingBudgetInMs(TOF_ADDR, TimingBudget);
-			status |= VL53L1X_SetInterMeasurementInMs(TOF_ADDR, (TimingBudget+VL53L1__TB_IM_DELTA));
-			curTB = TimingBudget;
-			status |= VL53L1X_StartRanging(TOF_ADDR);
-			readCounter=0;
-			numerrors=0;
-			ErrorPerc=0;
-		}
-		if (CalibOffset!=curCO) {					// update Calibration)
-			status |= VL53L1X_StopRanging(TOF_ADDR);
-			status |= VL53L1X_SetOffset(TOF_ADDR, CalibOffset);
-			curCO = CalibOffset;
-			status |= VL53L1X_StartRanging(TOF_ADDR);
-			readCounter=0;
-			numerrors=0;
-			ErrorPerc=0;
-		}
-		if (DistanceMode!=curDM) {					// update Distance Mode)
-			status |= VL53L1X_StopRanging(TOF_ADDR);
-			status |= VL53L1X_SetDistanceMode(TOF_ADDR, DistanceMode);
-			curDM = DistanceMode;
-			status |= VL53L1X_StartRanging(TOF_ADDR);
-			readCounter=0;
-			numerrors=0;
-			ErrorPerc=0;
-		}
-
-		timing[0]=TIM3->CNT-timing[0];
-		//distance reading
-		timing[1]=TIM3->CNT;
-		readCounter++;
-		while (dataReady == 0){
-			status |= VL53L1X_CheckForDataReady(TOF_ADDR, &dataReady);
-		}
-		timing[1]=TIM3->CNT-timing[1];
-		timing[2]=TIM3->CNT;
-		status |= VL53L1X_GetRangeStatus(TOF_ADDR, &RangeStatus);
-		timing[2]=TIM3->CNT-timing[2];
-		if (RangeStatus>RANGE_STATUS_THREEESH){
-			numerrors++;
-			timing[3]=TIM3->CNT;
-			status |= VL53L1X_ClearInterrupt(TOF_ADDR);  				// restart readings only in case of errors. If no errors it will be restarted later
-			timing[3]=TIM3->CNT-timing[3];
-			timing[10]=TIM3->CNT-timing[10];
-			__NOP();
-		} else {
-			goodRanging=1;	// exit reading loop
-			timing[3]=999999;
-		}
-		currperc =((numerrors*100)+readCounter-1)/readCounter;
-		ErrorPerc=currperc;
-	}
-
-	//here is available a "no error" reading. Proceed getting all values
-
-	timing[4]=TIM3->CNT;
-	status |= VL53L1X_GetDistance(TOF_ADDR, &Distance);
-	timing[4]-=TIM3->CNT-timing[4];
-	ReadingTime=HAL_GetTick()-prevtime;									// time interval since previous reading
-	prevtime+=ReadingTime;												// current time
-
-	timing[5]=TIM3->CNT;
-	status |= VL53L1X_GetSignalRate(TOF_ADDR, &SignalRate);
-	timing[5]=TIM3->CNT-timing[5];
-	timing[6]=TIM3->CNT;
-	status |= VL53L1X_GetAmbientRate(TOF_ADDR, &AmbientRate);
-	timing[6]=TIM3->CNT-timing[6];
-	timing[7]=TIM3->CNT;
-//	status |= VL53L1X_GetSignalPerSpad(TOF_ADDR, &SignalPerSpad);
-	timing[7]=TIM3->CNT-timing[7];
-	timing[8]=TIM3->CNT;
-//	status |= VL53L1X_GetAmbientPerSpad(TOF_ADDR, &AmbientPerSpad);
-	timing[8]=TIM3->CNT-timing[8];
-	timing[9]=TIM3->CNT;
-	status |= VL53L1X_ClearInterrupt(TOF_ADDR); 						// Everything read. Restart readings
-	timing[9]=TIM3->CNT-timing[9];
-
-	timing[10]=TIM3->CNT-timing[10];
-
-	// setting RangeStatus variable if I2C communication went wrong
-	if (status) {
-		RangeStatus=99;
-		HAL_Delay(1000);
-	}
-}
-
-*/
 

@@ -16,7 +16,7 @@
  * set information about the I2c connection
  ***************************************************/
 #define TOF_PORT	hi2c1			// that's the I2C port connected to VI53L1X
-#define TOF_ADDR	0x52			// the I2C chip address
+#define TOF_ADDR	0x52			// the VL53L1X I2C chip address
 
 
 /*****************     STEP 2      *****************
@@ -89,6 +89,8 @@
 #define VL53L1__IO_ERROR			( - 13)
 	/*!< error reported from IO functions */
 
+/*|||||||||||| END OF DEVICE PARAMETERS |||||||||||||*/
+
 
 /*|||||||||||||| PACKAGE PARAMETERS |||||||||||||||||*/
 /* declarations set by STM software library          */
@@ -98,6 +100,8 @@ typedef struct {
 } VL53L1_Dev_t;
 
 typedef VL53L1_Dev_t *VL53L1_DEV;
+
+/*|||||||||||| END OF PACKAGE PARAMETERS ||||||||||||*/
 
 
 // function declarations
