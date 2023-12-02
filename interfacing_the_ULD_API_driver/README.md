@@ -21,14 +21,62 @@ Save the project<br>
 <br>
 
 ## on CubeIDE
+- download from ST website the ULD driver for VL53L1X and
+  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.c</b> into the project source folder
+  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.h</b> into the project header folder
 -	copy from this repository file "vl53l1_platform.h" and put it in the headers folder<br>
 -	copy from this repository file "vl53l1_platform.c" and put it in the headers folder<br>
+- edit main.h file adding the libraries include, this way: 
 <br>
+
+```sh
+(main.h)
+...
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "vl53l1_platform.h"
+#include "VL53L1X_api.h"
+/* USER CODE END Includes */
+...
+```
 <br>
-This repository contains the C code, Node-RED programs, schemes and information about the project shown in my YouTube playlist about Gesture Recognition through the VL53Lxx TOF family by STMicroelectronics.<br>
-Playlist was created on dec '23 and has yet to be populated with videos entering into details of handling (simple) Gesture Recognition projects.<br>
-Currently there is a description of handling VL53L1X via the ULD API driver by STMicroelectronics.<br>
-Details about the integration, the sample interfacing functions, the Node-RED program used on STM32CubeMonitor to test the TOF sensor, are in the [corresponding folder](./interfacing_the_ULD_API_driver).<br>
+Now you can enable VL53L1X and start ranging from main.<br>
+This way:<br>
+-  initialize the device in USER CODE BEGIN 2:<br>
+
+```sh
+(main.c)
+...
+  /* USER CODE BEGIN 2 */
+
+  if (VL53L1__Init())
+	  while (1) {};
+
+  /* USER CODE END 2 */
+...
+```
+<br>
+-  start ranging in "USER CODE BEGIN WHILE":
+
+```sh
+(main.c)
+...
+  /* USER CODE BEGIN WHILE */
+
+  VL53L1X_StartRanging (TOF_ADDR);
+...
+```
+<br>
+-  then proceeding getting renging values:
+
+```sh
+(main.c)
+...
+uint16_t Distance=VL53L1__GetDistance(2);
+...
+```
+<br>
+
 <br>
 <br><br><br><br><br><br>
 # VL53L1X-STM32 una libreria per il riconoscimento dei gesti
