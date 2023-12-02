@@ -18,7 +18,7 @@ Details about the integration, the sample interfacing functions, the Node-RED pr
 
 <br>
 
-Questa repository contiene il sorgente C, i programmi Node-RED, schemi and informazini sui progetti mostrati nella mia playlist YouTube su Gesture Recognition attraverso la famiglia TOF VL53Lxx di STMicroelectronics.<br>
+Questa repository contiene il sorgente C, i programmi Node-RED, schemi and informazini sui progetti mostrati nella [mia playlist YouTube](https://www.youtube.com/playlist?list=PL6Fwy7aR3zSlArL6TJnSjWSbKmxM5BHnb) su Gesture Recognition attraverso la famiglia TOF VL53Lxx di STMicroelectronics.<br>
 La playlist è stata creata nel dec '23 e non è ancora popolataa con i video che entrano nel dettaglio della gestione di (semplici) progetti di Gesture Recognition.<br>
 Attualmente c'e' una descrizione su come gestire il sensore VL53L1X attraverso il driver ULD API di STMicroelectronics.<br>
 I dettagli sulla integrazione, le funzioni di interfaccia di esempio, il programma Node-RED usato su STM32CubeMonitor per testare il sensore TOF, sono contenuti nella [cartella corrispondente](./interfacing_the_ULD_API_driver).<br>
