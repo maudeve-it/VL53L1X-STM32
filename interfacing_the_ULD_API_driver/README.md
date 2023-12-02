@@ -8,7 +8,7 @@ _**<br>Below the English text you'll find the Italian version</i>**_
 <br>
 Here is an implementations of the communication funtions required by ULD driver.<br>
 VL53L1X ULD driver is available here: https://www.st.com/en/embedded-software/stsw-img009.html <br>
-As indicated on my video about this set of functions, to use VL53L1X and ULD driver you just need to:<br>
+As indicated [on my video](https://youtu.be/xNhK2Uju1b4) about this set of functions, to use VL53L1X and ULD driver you just need to:<br>
 
 ## on CubeMX
 -	create a project (I use CubeIDE)<br>
@@ -87,7 +87,7 @@ uint16_t Distance=VL53L1__GetDistance(2);
 <br>
 Qui trovi l'implementazione delle funzioni di comunicazione richieste dal driver ULD.<br>
 Il driver ULD per VL53L1X e' disponibile qui: https://www.st.com/en/embedded-software/stsw-img009.html <br>
-Come indicato nel mio video su questo set di funzioni, per usare VL53L1X ed il driver ULD devi semplicemente:<br>
+Come indicato [nel mio video](https://youtu.be/xNhK2Uju1b4) su questo set di funzioni, per usare VL53L1X ed il driver ULD devi semplicemente:<br>
 
 ## on CubeMX
 -	create a project (I use CubeIDE)<br>
