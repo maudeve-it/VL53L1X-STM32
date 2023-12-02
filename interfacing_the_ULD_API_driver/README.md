@@ -15,7 +15,7 @@ As indicated on my video about this set of functions, to use VL53L1X you just ne
 -	(optional) enable an input GPIO pin connecting the GPIO pin of VL53L1X (INT pin on some breakout boards)<br>
 -	(optional) enable an output GPIO pin connecting the XSHUT pin of VL53L1X (SHUT pin on some breakout boards)<br>
 <br>
-If not connected to the uC, XHUT pin of VL52L1x must be connected to VCC-<br>
+If not connected to the uC, XHUT pin of VL52L1x must be connected to VCC<br>
 <br>
 Save the project<br>
 <br>
