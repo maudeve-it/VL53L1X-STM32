@@ -7,6 +7,7 @@ _**<br>Below the English text you'll find the Italian version</i>**_
 
 <br>
 Here is an implementations of the interfacing funtions required by ULD driver.<br>
+VL53L1X ULD driver is available here: https://www.st.com/en/embedded-software/stsw-img009.html 
 As indicated on my video about this set of functions, to use VL53L1X you just need to:<br>
 
 ## on CubeMX
@@ -24,8 +25,8 @@ Save the project<br>
 - download from ST website the ULD driver for VL53L1X and
   -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.c</b> into the project source folder
   -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.h</b> into the project header folder
--	copy from this repository file "vl53l1_platform.h" and put it in the headers folder<br>
--	copy from this repository file "vl53l1_platform.c" and put it in the headers folder<br>
+-	copy from this repository the file "vl53l1_platform.h" and put it in the headers folder<br>
+-	copy from this repository the file "vl53l1_platform.c" and put it in the headers folder<br>
 - edit main.h file adding the libraries include, this way: 
 <br>
 
@@ -67,7 +68,7 @@ This way:<br>
 ...
 ```
 <br>
--  then proceeding getting renging values:
+-  then proceeding getting ranging values:
 
 ```sh
 (main.c)
