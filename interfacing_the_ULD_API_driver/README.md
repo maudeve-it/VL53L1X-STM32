@@ -19,6 +19,7 @@ If not connected to the uC, XHUT pin of VL52L1x must be connected to VCC-<br>
 <br>
 Save the project<br>
 <br>
+
 ## on CubeIDE
 -	copy from this repository file "vl53l1_platform.h" and put it in the headers folder<br>
 -	copy from this repository file "vl53l1_platform.c" and put it in the headers folder<br>
