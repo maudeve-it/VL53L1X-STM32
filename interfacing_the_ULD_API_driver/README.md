@@ -112,7 +112,7 @@ Follow these steps:<br>
 
 <br><br><br><br><br><br>
 
-# Usare VL53L1X con la libreria ULD API driver di STMicroelectronics
+# Usare VL53L1X con il driver ULD API di STM
 
 
 <br>
