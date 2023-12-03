@@ -86,8 +86,6 @@ uint16_t Distance=VL53L1__GetDistance(2);
 ...
 ```
 <br>
-
-<br>
 <br>
 
 ## Testing VL53L1X on STM32CubeMonitor
@@ -198,8 +196,6 @@ In questo modo:<br>
 uint16_t Distance=VL53L1__GetDistance(2);
 ...
 ```
-<br>
-
 <br>
 <br>
 
