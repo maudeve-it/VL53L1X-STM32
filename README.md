@@ -1,6 +1,8 @@
 _**Piu' sotto, al termine della lingua inglese trovi il testo in italiano. </i>**_
 _**<br>Below the English text you'll find the Italian version</i>**_
 <br>
+<br>
+<br>
 
 # VL53L1X-STM32 a gesture recognition handling library
 
