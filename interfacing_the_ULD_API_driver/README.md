@@ -28,12 +28,12 @@ Save the project<br>
 <br>
 
 ## on CubeIDE
-- download from ST website the ULD driver for VL53L1X and
-  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.c</b> into the project source folder
-  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.h</b> into the project header folder
--	copy from this repository the file "vl53l1_platform.h" and put it in the headers folder<br>
--	copy from this repository the file "vl53l1_platform.c" and put it in the headers folder<br>
-- edit main.h file adding the libraries include, this way: 
+- download from ST website the ULD driver for VL53L1X and<br>
+  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.c</b> into the project source folder<br>
+  -  from the  API/core folder of the downloaded package copy <b>VL53L1X_api.h</b> into the project header folder<br>
+- copy from this repository the file <b>vl53l1_platform.h</b> and put it in the headers folder<br>
+- copy from this repository the file <b>vl53l1_platform.c</b> and put it in the headers folder<br>
+- edit <b>main.h</b> file adding the libraries include, this way:<br> 
 <br>
 
 ```sh
@@ -47,7 +47,10 @@ Save the project<br>
 ...
 ```
 <br>
-Now you can enable VL53L1X and start ranging from main.<br>
+- finally edit <b>vl53l1_platform.h</b> and set the configuration parameters in STEP1 to STEP5<br>
+<br>
+<br>
+Now you can edit <b>main.c</b> enabling VL53L1X and starting ranging.<br>
 This way:<br>
 -  initialize the device in USER CODE BEGIN 2:<br>
 
@@ -85,6 +88,22 @@ uint16_t Distance=VL53L1__GetDistance(2);
 <br>
 
 <br>
+<br>
+## Testing VL53L1X on STM32CubeMonitor<br>
+<br>
+This repository includes also a testing function and a flow for CubeMonitor to analyze testing results on a PC on real time.<br>
+An example of CubeMonitor working with this testing fonction is within the same [YoutTube video](https://youtu.be/xNhK2Uju1b4) mentionned on top of this page.<br>
+<br>
+- setup the project as indicated above<b>
+- copy from this repository the file <b>vl53l1_test.h</b> and put it in the headers folder<br>
+- copy from this repository the file <b>vl53l1_test.c</b> and put it in the headers folder<br>
+- copy from this repository the file <b>vl53l1_test.json</b> and put it in the project root folder<br>
+- add the #include vl53l1_test.h to <b>main.h</b> as indicated above<br>
+- edit <b>main.c</b> adding the device inizialization and starting ranging as indicated above
+- in the main loob of main.c add the call to the function 
+
+
+
 <br><br><br><br><br><br>
 
 # Usare VL53L1X con la libreria ULD API driver di STMicroelectronics
