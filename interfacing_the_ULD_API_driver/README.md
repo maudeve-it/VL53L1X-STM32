@@ -18,6 +18,12 @@ As indicated [on my video](https://youtu.be/xNhK2Uju1b4) about this set of funct
 <br>
 If not connected to the uC, XHUT pin of VL52L1x must be connected to VCC<br>
 <br>
+Give the pin theese names:<br>
+-	TOF_SDA<br>
+-	TOF_SCL<br>
+-	TOF_GPIO<br>
+-	TOF_XSHUT<br>
+<br>  
 Save the project<br>
 <br>
 
