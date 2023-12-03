@@ -90,25 +90,26 @@ uint16_t Distance=VL53L1__GetDistance(2);
 <br>
 <br>
 
-## Testing VL53L1X on STM32CubeMonitor<br>
+## Testing VL53L1X on STM32CubeMonitor
+
 <br>
 This repository includes also a testing function and a flow for CubeMonitor to analyze testing results on a PC on real time.<br>
 An example of CubeMonitor working with this testing fonction is within the same [YoutTube video](https://youtu.be/xNhK2Uju1b4) mentionned on top of this page.<br>
 <br>
 Follow these steps:<br>
-- setup the project as indicated above<b>
+- setup the project as indicated above<br>
 - copy from this repository the file <b>vl53l1_test.h</b> and put it in the headers folder<br>
 - copy from this repository the file <b>vl53l1_test.c</b> and put it in the source folder<br>
 - copy from this repository the file <b>vl53l1_test.json</b> and put it in the project root folder<br>
 - add the #include vl53l1_test.h to <b>main.h</b> as indicated above<br>
-- edit <b>main.c</b> adding the device inizialization and starting ranging as indicated above
-- in the main loop of main.c add the call to the VL53L1__test() function. That will populate the global variables read by CubeMonitor
+- edit <b>main.c</b> adding the device inizialization and starting ranging as indicated above<br>
+- in the main loop of main.c add the call to the VL53L1__test() function. That will populate the global variables read by CubeMonitor<br>
 - open STMCubeMonitor<br>
-  -  import a flow
-  -  browse to the project main folder
-  -  doubleclick <b>vl53l1_test.json</b> and confirm import
-  -  deploy <b>Vl53l1X_TEST</b>, run the dashboard flow and you'll see the data read from the device. 
-
+  -  import a flow<br>
+  -  browse to the project main folder<br>
+  -  doubleclick <b>vl53l1_test.json</b> and confirm import<br>
+  -  deploy <b>Vl53l1X_TEST</b>, run the dashboard flow and you'll see the data read from the device. <br>
+<br>
 
 
 <br><br><br><br><br><br>
@@ -202,7 +203,8 @@ uint16_t Distance=VL53L1__GetDistance(2);
 <br>
 <br>
 
-## Analizzare VL53L1X su STM32CubeMonitor<br>
+## Analizzare VL53L1X su STM32CubeMonitor
+
 <br>
 Questa repository include anche una funzione di tested un flow per CubeMonitor per analizzare i risultati del test su PC in tempo reale<br>
 Un esempio dell'analisi fatta con CubeMonitor attraverso questa funzione si vede nello stesso [video YoutTube](https://youtu.be/xNhK2Uju1b4) citato all'inizio di questa pagina.<br>
