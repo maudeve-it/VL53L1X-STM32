@@ -2,12 +2,8 @@ _**Piu' sotto, al termine della lingua inglese trovi il testo in italiano. </i>*
 _**<br>Below the English text you'll find the Italian version</i>**_
 <br>
 <br>
-<br>
 
 # VL53L1X-STM32 a gesture recognition handling library
-
-
-<br>
 
 This repository contains the C code, Node-RED programs, schemes and information about the project shown in [my YouTube playlist](https://www.youtube.com/playlist?list=PL6Fwy7aR3zSlArL6TJnSjWSbKmxM5BHnb) about Gesture Recognition through the VL53Lxx TOF family by STMicroelectronics.<br>
 Playlist was created on dec '23 and has yet to be populated with videos entering into details of handling (simple) Gesture Recognition projects.<br>
