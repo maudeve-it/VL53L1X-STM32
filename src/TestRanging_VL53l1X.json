@@ -169,18 +169,18 @@
         ]
     },
     {
-        "id": "2da1ece4.dd0624",
+        "id": "691d042a.bf7dec",
         "type": "tab",
-        "label": "VL53L1X_test",
+        "label": "TestRanging_VL53L1X",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "b58234c9.060008",
+        "id": "4432a02b.981cc",
         "type": "ui_button",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "",
-        "group": "571b830c.a465ac",
+        "group": "350904ed.80fdac",
         "order": 1,
         "width": 3,
         "height": 1,
@@ -198,17 +198,17 @@
         "y": 140,
         "wires": [
             [
-                "2282f8ce.90be68",
-                "4be25509.4d974c"
+                "a33d0e69.26a4b",
+                "4a230a08.074db4"
             ]
         ]
     },
     {
-        "id": "1d37b6aa.7a7719",
+        "id": "fdc5bb03.6f5668",
         "type": "ui_button",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "",
-        "group": "571b830c.a465ac",
+        "group": "350904ed.80fdac",
         "order": 4,
         "width": 3,
         "height": 1,
@@ -226,30 +226,30 @@
         "y": 200,
         "wires": [
             [
-                "2282f8ce.90be68",
-                "4be25509.4d974c"
+                "a33d0e69.26a4b",
+                "4a230a08.074db4"
             ]
         ]
     },
     {
-        "id": "619e4e3.0a86cb",
+        "id": "83c92274.f9021",
         "type": "acquisition in",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "ST-Link",
         "probeconfig": "53e07653.b1fdf8",
-        "x": 170,
-        "y": 480,
+        "x": 150,
+        "y": 520,
         "wires": [
             [
-                "2d712826.561b88"
+                "12e74421.8bbb6c"
             ],
             []
         ]
     },
     {
-        "id": "4484f652.31b558",
+        "id": "820ebdf8.82289",
         "type": "acquisition out",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "ST-Link",
         "probeconfig": "53e07653.b1fdf8",
         "x": 1040,
@@ -257,9 +257,9 @@
         "wires": []
     },
     {
-        "id": "f04f9b65.b50178",
+        "id": "8716e50e.1bdd98",
         "type": "subflow:8381c865.236028",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "AmbientRate",
         "env": [
             {
@@ -272,17 +272,17 @@
         "y": 600,
         "wires": [
             [
-                "cfff6af6.98bbc8"
+                "85bef101.c797c"
             ]
         ]
     },
     {
-        "id": "cfff6af6.98bbc8",
+        "id": "85bef101.c797c",
         "type": "ui_gauge",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "",
-        "group": "571b830c.a465ac",
-        "order": 17,
+        "group": "350904ed.80fdac",
+        "order": 10,
         "width": 4,
         "height": 3,
         "gtype": "gage",
@@ -303,59 +303,59 @@
         "wires": []
     },
     {
-        "id": "2d712826.561b88",
+        "id": "12e74421.8bbb6c",
         "type": "processing",
-        "z": "2da1ece4.dd0624",
-        "groupname": "grp-data_VL32L1X",
-        "groupid": "2282f8ce.90be68",
+        "z": "691d042a.bf7dec",
+        "groupname": "F103CB_VL53L1X_proportional-DATA",
+        "groupid": "f2f656a1.5f51c8",
         "expressions": [],
         "statistics": [],
         "logmode": "no",
         "logformat": "stcm",
-        "x": 430,
+        "x": 410,
         "y": 480,
         "wires": [
             [
-                "f04f9b65.b50178",
-                "cfe22206.0a0a9",
-                "20f4922d.a2b87e",
-                "5b58178b.4ce278",
-                "294e4079.894ed",
-                "158b694a.5b49f7"
+                "8716e50e.1bdd98",
+                "7f92b19d.11b37",
+                "20ae2cc5.679b34",
+                "1b2f5393.9e406c",
+                "60e69712.c73cf8",
+                "287d52a8.40da5e"
             ],
             []
         ]
     },
     {
-        "id": "2282f8ce.90be68",
+        "id": "a33d0e69.26a4b",
         "type": "variables",
-        "z": "2da1ece4.dd0624",
-        "groupname": "grp-data_VL32L1X",
+        "z": "691d042a.bf7dec",
+        "groupname": "F103CB_VL53L1X_proportional-DATA",
         "accesspoint": "0",
-        "execonfig": "55fcfdae.d436b4",
+        "execonfig": "89b07b5e.36db18",
         "variablelist": [],
         "triggerstartmode": "manual",
-        "triggername": "AmbientRate",
+        "triggername": "avgDist",
         "triggerthreshold": "",
         "frequency": "",
         "frequencyType": "0",
         "snapshotheader": "",
         "mode": "direct",
-        "lastImportedTime": 1700579139647,
+        "lastImportedTime": 1705933591350,
         "openStatus": true,
-        "x": 450,
+        "x": 510,
         "y": 200,
         "wires": [
             [
-                "4484f652.31b558"
+                "820ebdf8.82289"
             ],
             []
         ]
     },
     {
-        "id": "cfe22206.0a0a9",
+        "id": "7f92b19d.11b37",
         "type": "subflow:8381c865.236028",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "SignalRate",
         "env": [
             {
@@ -368,17 +368,17 @@
         "y": 540,
         "wires": [
             [
-                "e6782c16.4a888"
+                "69f87b6b.455d24"
             ]
         ]
     },
     {
-        "id": "e6782c16.4a888",
+        "id": "69f87b6b.455d24",
         "type": "ui_gauge",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "",
-        "group": "571b830c.a465ac",
-        "order": 10,
+        "group": "350904ed.80fdac",
+        "order": 17,
         "width": 4,
         "height": 3,
         "gtype": "gage",
@@ -399,11 +399,11 @@
         "wires": []
     },
     {
-        "id": "77d9d0bd.0fbae",
+        "id": "8bb1b13c.2b301",
         "type": "ui_button",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "",
-        "group": "571b830c.a465ac",
+        "group": "350904ed.80fdac",
         "order": 6,
         "width": 3,
         "height": 1,
@@ -421,16 +421,16 @@
         "y": 300,
         "wires": [
             [
-                "59fa5d91.5dd984",
-                "8617f31c.2de14"
+                "a55e428e.8a957",
+                "89c55f4e.cbb1e"
             ]
         ]
     },
     {
-        "id": "59fa5d91.5dd984",
+        "id": "a55e428e.8a957",
         "type": "ui_chartst",
-        "z": "2da1ece4.dd0624",
-        "group": "571b830c.a465ac",
+        "z": "691d042a.bf7dec",
+        "group": "350904ed.80fdac",
         "name": "Distance",
         "order": 8,
         "width": 22,
@@ -445,10 +445,10 @@
         "wires": []
     },
     {
-        "id": "8617f31c.2de14",
+        "id": "89c55f4e.cbb1e",
         "type": "ui_chartst",
-        "z": "2da1ece4.dd0624",
-        "group": "571b830c.a465ac",
+        "z": "691d042a.bf7dec",
+        "group": "350904ed.80fdac",
         "name": "StdDev",
         "order": 11,
         "width": 15,
@@ -463,54 +463,54 @@
         "wires": []
     },
     {
-        "id": "49b97d01.e9f694",
+        "id": "c04ec9d9.eb3618",
         "type": "ui_write",
-        "z": "2da1ece4.dd0624",
-        "group": "571b830c.a465ac",
+        "z": "691d042a.bf7dec",
+        "group": "350904ed.80fdac",
         "name": "set parameters",
         "order": 3,
         "width": 6,
         "height": 3,
-        "x": 720,
+        "x": 820,
         "y": 140,
         "wires": [
             [
-                "4484f652.31b558"
+                "820ebdf8.82289"
             ]
         ]
     },
     {
-        "id": "4be25509.4d974c",
+        "id": "4a230a08.074db4",
         "type": "variables",
-        "z": "2da1ece4.dd0624",
-        "groupname": "grp-param_VL32L1X",
+        "z": "691d042a.bf7dec",
+        "groupname": "F103CB_VL53L1X_proportional-PARAM",
         "accesspoint": 0,
-        "execonfig": "973f6089.f3c3b",
+        "execonfig": "5457dbd2.899c54",
         "variablelist": [],
         "triggerstartmode": "manual",
-        "triggername": "TimingBudget",
+        "triggername": "DistanceMode",
         "triggerthreshold": "",
         "frequency": "",
         "frequencyType": "0",
         "snapshotheader": "",
         "mode": "direct",
-        "lastImportedTime": 1700579165671,
+        "lastImportedTime": 1705933561427,
         "openStatus": true,
-        "x": 460,
+        "x": 520,
         "y": 140,
         "wires": [
             [
-                "49b97d01.e9f694"
+                "c04ec9d9.eb3618"
             ],
             []
         ]
     },
     {
-        "id": "7d770afe.dad084",
+        "id": "8c92306.4082cd",
         "type": "ui_led",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "order": 16,
-        "group": "571b830c.a465ac",
+        "group": "350904ed.80fdac",
         "width": 2,
         "height": 2,
         "label": "",
@@ -562,9 +562,9 @@
         "wires": []
     },
     {
-        "id": "20f4922d.a2b87e",
+        "id": "20ae2cc5.679b34",
         "type": "subflow:8381c865.236028",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "RangeStatus",
         "env": [
             {
@@ -577,15 +577,15 @@
         "y": 480,
         "wires": [
             [
-                "7d770afe.dad084"
+                "8c92306.4082cd"
             ]
         ]
     },
     {
-        "id": "bef8d7c7.37cad8",
+        "id": "f2dda1b5.8296f",
         "type": "ui_text",
-        "z": "2da1ece4.dd0624",
-        "group": "571b830c.a465ac",
+        "z": "691d042a.bf7dec",
+        "group": "350904ed.80fdac",
         "order": 13,
         "width": 2,
         "height": 2,
@@ -598,9 +598,9 @@
         "wires": []
     },
     {
-        "id": "5b58178b.4ce278",
+        "id": "1b2f5393.9e406c",
         "type": "subflow:8381c865.236028",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "ErrorPerc",
         "env": [
             {
@@ -613,14 +613,14 @@
         "y": 660,
         "wires": [
             [
-                "bef8d7c7.37cad8"
+                "f2dda1b5.8296f"
             ]
         ]
     },
     {
-        "id": "294e4079.894ed",
+        "id": "60e69712.c73cf8",
         "type": "switch",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "Filter Distance and  avgDist",
         "property": "payload.variablename",
         "propertyType": "msg",
@@ -643,17 +643,17 @@
         "y": 420,
         "wires": [
             [
-                "59fa5d91.5dd984"
+                "a55e428e.8a957"
             ],
             [
-                "59fa5d91.5dd984"
+                "a55e428e.8a957"
             ]
         ]
     },
     {
-        "id": "158b694a.5b49f7",
+        "id": "287d52a8.40da5e",
         "type": "switch",
-        "z": "2da1ece4.dd0624",
+        "z": "691d042a.bf7dec",
         "name": "Filter StdDev",
         "property": "payload.variablename",
         "propertyType": "msg",
@@ -671,18 +671,18 @@
         "y": 360,
         "wires": [
             [
-                "8617f31c.2de14"
+                "89c55f4e.cbb1e"
             ]
         ]
     },
     {
-        "id": "571b830c.a465ac",
+        "id": "350904ed.80fdac",
         "type": "ui_group",
-        "name": "Default",
-        "tab": "96793839.6c8518",
+        "name": "TestRanging_VL51L1X",
+        "tab": "a889fff4.f106a",
         "order": 1,
         "disp": false,
-        "width": 22,
+        "width": "22",
         "collapse": false
     },
     {
@@ -693,54 +693,370 @@
         "protocol": "SWD",
         "frequency": "1.8 MHz - Default",
         "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
-        "probeversion": "ST Link firmware version V2.J42",
+        "probeversion": "ST Link firmware version V2.J43",
         "connectionType": "tcp"
     },
     {
-        "id": "55fcfdae.d436b4",
+        "id": "89b07b5e.36db18",
         "type": "exe-config",
-        "name": "data_VL32L1X",
-        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug\\test1.elf",
-        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug",
+        "name": "F103CB_VL53L1X_proportional-DATA",
+        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_proportional\\Debug\\F103CB_VL53L1X_proportional.elf",
+        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_proportional\\Debug",
         "exevariablelist": [
             {
-                "address": "0x080045a0",
+                "address": "0x08005080",
+                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
+                "type": 1
+            },
+            {
+                "address": "0x080050dc",
+                "name": "status_rtn[0]",
+                "type": 1
+            },
+            {
+                "address": "0x080050f4",
                 "name": "AHBPrescTable[0]",
                 "type": 1
             },
             {
-                "address": "0x200000ee",
-                "name": "AmbientRate",
-                "type": 3,
-                "checked": true
-            },
-            {
-                "address": "0x080045b0",
+                "address": "0x08005104",
                 "name": "APBPrescTable[0]",
                 "type": 1
             },
             {
-                "address": "0x200000fc",
-                "name": "avgDist",
-                "type": 9,
+                "address": "0x20000000",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000004",
+                "name": "TimingBudget",
+                "type": 3
+            },
+            {
+                "address": "0x20000006",
+                "name": "DistanceMode",
+                "type": 3,
                 "checked": true
             },
             {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x20000010",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x20000094",
+                "name": "hi2c1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "hi2c1.Init.ClockSpeed",
+                "type": 5
+            },
+            {
+                "address": "0x2000009c",
+                "name": "hi2c1.Init.DutyCycle",
+                "type": 5
+            },
+            {
+                "address": "0x200000a0",
+                "name": "hi2c1.Init.OwnAddress1",
+                "type": 5
+            },
+            {
+                "address": "0x200000a4",
+                "name": "hi2c1.Init.AddressingMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000a8",
+                "name": "hi2c1.Init.DualAddressMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000ac",
+                "name": "hi2c1.Init.OwnAddress2",
+                "type": 5
+            },
+            {
+                "address": "0x200000b0",
+                "name": "hi2c1.Init.GeneralCallMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000b4",
+                "name": "hi2c1.Init.NoStretchMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000b8",
+                "name": "hi2c1.pBuffPtr",
+                "type": 5
+            },
+            {
+                "address": "0x200000bc",
+                "name": "hi2c1.XferSize",
+                "type": 3
+            },
+            {
+                "address": "0x200000be",
+                "name": "hi2c1.XferCount",
+                "type": 3
+            },
+            {
+                "address": "0x200000c0",
+                "name": "hi2c1.XferOptions",
+                "type": 5
+            },
+            {
+                "address": "0x200000c4",
+                "name": "hi2c1.PreviousState",
+                "type": 5
+            },
+            {
+                "address": "0x200000c8",
+                "name": "hi2c1.hdmatx",
+                "type": 5
+            },
+            {
+                "address": "0x200000cc",
+                "name": "hi2c1.hdmarx",
+                "type": 5
+            },
+            {
+                "address": "0x200000d0",
+                "name": "hi2c1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x200000d1",
+                "name": "hi2c1.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000d2",
+                "name": "hi2c1.Mode",
+                "type": 2
+            },
+            {
+                "address": "0x200000d4",
+                "name": "hi2c1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x200000d8",
+                "name": "hi2c1.Devaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000dc",
+                "name": "hi2c1.Memaddress",
+                "type": 5
+            },
+            {
+                "address": "0x200000e0",
+                "name": "hi2c1.MemaddSize",
+                "type": 5
+            },
+            {
+                "address": "0x200000e4",
+                "name": "hi2c1.EventCount",
+                "type": 5
+            },
+            {
                 "address": "0x200000e8",
+                "name": "htim3.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x200000ec",
+                "name": "htim3.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x200000f0",
+                "name": "htim3.Init.CounterMode",
+                "type": 5
+            },
+            {
+                "address": "0x200000f4",
+                "name": "htim3.Init.Period",
+                "type": 5
+            },
+            {
+                "address": "0x200000f8",
+                "name": "htim3.Init.ClockDivision",
+                "type": 5
+            },
+            {
+                "address": "0x200000fc",
+                "name": "htim3.Init.RepetitionCounter",
+                "type": 5
+            },
+            {
+                "address": "0x20000100",
+                "name": "htim3.Init.AutoReloadPreload",
+                "type": 5
+            },
+            {
+                "address": "0x20000104",
+                "name": "htim3.Channel",
+                "type": 2
+            },
+            {
+                "address": "0x20000108",
+                "name": "htim3.hdma[0]",
+                "type": 5
+            },
+            {
+                "address": "0x20000124",
+                "name": "htim3.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000125",
+                "name": "htim3.State",
+                "type": 2
+            },
+            {
+                "address": "0x20000126",
+                "name": "htim3.ChannelState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x2000012a",
+                "name": "htim3.ChannelNState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x2000012e",
+                "name": "htim3.DMABurstState",
+                "type": 2
+            },
+            {
+                "address": "0x20000130",
+                "name": "GestureMenu_CurrentItem",
+                "type": 1
+            },
+            {
+                "address": "0x20000134",
                 "name": "Distance",
                 "type": 3,
                 "checked": true
             },
             {
-                "address": "0x20000006",
-                "name": "DistanceMode",
+                "address": "0x20000136",
+                "name": "RangeStatus",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x20000138",
+                "name": "SignalRate",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x2000013a",
+                "name": "AmbientRate",
                 "type": 3
             },
             {
-                "address": "0x200000f0",
+                "address": "0x2000013c",
                 "name": "ErrorPerc",
                 "type": 1,
                 "checked": true
+            },
+            {
+                "address": "0x20000140",
+                "name": "numerrors",
+                "type": 5
+            },
+            {
+                "address": "0x20000144",
+                "name": "readCounter",
+                "type": 5
+            },
+            {
+                "address": "0x20000148",
+                "name": "avgDist",
+                "type": 9,
+                "checked": true
+            },
+            {
+                "address": "0x2000014c",
+                "name": "StdDev",
+                "type": 9,
+                "checked": true
+            },
+            {
+                "address": "0x200002e8",
+                "name": "uwTick",
+                "type": 5
+            }
+        ],
+        "expand": false,
+        "filename": "F103CB_VL53L1X_proportional.elf",
+        "exeModifiedTime": 1705937389283,
+        "configLastUpdate": 1705937536065
+    },
+    {
+        "id": "5457dbd2.899c54",
+        "type": "exe-config",
+        "name": "F103CB_VL53L1X_proportional-PARAM",
+        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_proportional\\Debug\\F103CB_VL53L1X_proportional.elf",
+        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_proportional\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x080050f4",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x2000013a",
+                "name": "AmbientRate",
+                "type": 3,
+                "checked": false
+            },
+            {
+                "address": "0x08005104",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000148",
+                "name": "avgDist",
+                "type": 9,
+                "checked": false
+            },
+            {
+                "address": "0x20000134",
+                "name": "Distance",
+                "type": 3,
+                "checked": false
+            },
+            {
+                "address": "0x20000006",
+                "name": "DistanceMode",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x2000013c",
+                "name": "ErrorPerc",
+                "type": 1,
+                "checked": false
+            },
+            {
+                "address": "0x20000130",
+                "name": "GestureMenu_CurrentItem",
+                "type": 1
             },
             {
                 "address": "0x200000d8",
@@ -863,266 +1179,107 @@
                 "type": 3
             },
             {
-                "address": "0x200000f4",
-                "name": "numerrors",
-                "type": 5
-            },
-            {
-                "address": "0x200000ea",
-                "name": "RangeStatus",
-                "type": 1,
-                "checked": true
-            },
-            {
-                "address": "0x200000f8",
-                "name": "readCounter",
-                "type": 5
-            },
-            {
-                "address": "0x200000ec",
-                "name": "SignalRate",
-                "type": 3,
-                "checked": true
-            },
-            {
-                "address": "0x08004588",
-                "name": "status_rtn[0]",
-                "type": 1
-            },
-            {
-                "address": "0x20000100",
-                "name": "StdDev",
-                "type": 9,
-                "checked": true
-            },
-            {
-                "address": "0x20000000",
-                "name": "SystemCoreClock",
-                "type": 5
-            },
-            {
-                "address": "0x20000004",
-                "name": "TimingBudget",
-                "type": 3
-            },
-            {
-                "address": "0x2000029c",
-                "name": "uwTick",
-                "type": 5
-            },
-            {
-                "address": "0x20000010",
-                "name": "uwTickFreq",
+                "address": "0x20000104",
+                "name": "htim3.Channel",
                 "type": 2
             },
             {
-                "address": "0x2000000c",
-                "name": "uwTickPrio",
+                "address": "0x2000012a",
+                "name": "htim3.ChannelNState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x20000126",
+                "name": "htim3.ChannelState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x2000012e",
+                "name": "htim3.DMABurstState",
+                "type": 2
+            },
+            {
+                "address": "0x20000108",
+                "name": "htim3.hdma[0]",
                 "type": 5
             },
             {
-                "address": "0x0800452c",
-                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
-                "type": 1
-            }
-        ],
-        "expand": false,
-        "filename": "test1.elf",
-        "exeModifiedTime": 1700577961107,
-        "configLastUpdate": 1700579139309
-    },
-    {
-        "id": "973f6089.f3c3b",
-        "type": "exe-config",
-        "name": "param_VL32L1X",
-        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug\\test1.elf",
-        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\test1\\Debug",
-        "exevariablelist": [
-            {
-                "address": "0x080045a0",
-                "name": "AHBPrescTable[0]",
-                "type": 1
+                "address": "0x20000100",
+                "name": "htim3.Init.AutoReloadPreload",
+                "type": 5
             },
             {
-                "address": "0x200000ee",
-                "name": "AmbientRate",
-                "type": 3
-            },
-            {
-                "address": "0x080045b0",
-                "name": "APBPrescTable[0]",
-                "type": 1
-            },
-            {
-                "address": "0x200000fc",
-                "name": "avgDist",
-                "type": 9
-            },
-            {
-                "address": "0x200000e8",
-                "name": "Distance",
-                "type": 3
-            },
-            {
-                "address": "0x20000006",
-                "name": "DistanceMode",
-                "type": 3,
-                "checked": true
+                "address": "0x200000f8",
+                "name": "htim3.Init.ClockDivision",
+                "type": 5
             },
             {
                 "address": "0x200000f0",
-                "name": "ErrorPerc",
-                "type": 1
-            },
-            {
-                "address": "0x200000d8",
-                "name": "hi2c1.Devaddress",
+                "name": "htim3.Init.CounterMode",
                 "type": 5
-            },
-            {
-                "address": "0x200000d4",
-                "name": "hi2c1.ErrorCode",
-                "type": 5
-            },
-            {
-                "address": "0x200000e4",
-                "name": "hi2c1.EventCount",
-                "type": 5
-            },
-            {
-                "address": "0x200000cc",
-                "name": "hi2c1.hdmarx",
-                "type": 5
-            },
-            {
-                "address": "0x200000c8",
-                "name": "hi2c1.hdmatx",
-                "type": 5
-            },
-            {
-                "address": "0x200000a4",
-                "name": "hi2c1.Init.AddressingMode",
-                "type": 5
-            },
-            {
-                "address": "0x20000098",
-                "name": "hi2c1.Init.ClockSpeed",
-                "type": 5
-            },
-            {
-                "address": "0x200000a8",
-                "name": "hi2c1.Init.DualAddressMode",
-                "type": 5
-            },
-            {
-                "address": "0x2000009c",
-                "name": "hi2c1.Init.DutyCycle",
-                "type": 5
-            },
-            {
-                "address": "0x200000b0",
-                "name": "hi2c1.Init.GeneralCallMode",
-                "type": 5
-            },
-            {
-                "address": "0x200000b4",
-                "name": "hi2c1.Init.NoStretchMode",
-                "type": 5
-            },
-            {
-                "address": "0x200000a0",
-                "name": "hi2c1.Init.OwnAddress1",
-                "type": 5
-            },
-            {
-                "address": "0x200000ac",
-                "name": "hi2c1.Init.OwnAddress2",
-                "type": 5
-            },
-            {
-                "address": "0x20000094",
-                "name": "hi2c1.Instance",
-                "type": 5
-            },
-            {
-                "address": "0x200000d0",
-                "name": "hi2c1.Lock",
-                "type": 2
-            },
-            {
-                "address": "0x200000dc",
-                "name": "hi2c1.Memaddress",
-                "type": 5
-            },
-            {
-                "address": "0x200000e0",
-                "name": "hi2c1.MemaddSize",
-                "type": 5
-            },
-            {
-                "address": "0x200000d2",
-                "name": "hi2c1.Mode",
-                "type": 2
-            },
-            {
-                "address": "0x200000b8",
-                "name": "hi2c1.pBuffPtr",
-                "type": 5
-            },
-            {
-                "address": "0x200000c4",
-                "name": "hi2c1.PreviousState",
-                "type": 5
-            },
-            {
-                "address": "0x200000d1",
-                "name": "hi2c1.State",
-                "type": 2
-            },
-            {
-                "address": "0x200000be",
-                "name": "hi2c1.XferCount",
-                "type": 3
-            },
-            {
-                "address": "0x200000c0",
-                "name": "hi2c1.XferOptions",
-                "type": 5
-            },
-            {
-                "address": "0x200000bc",
-                "name": "hi2c1.XferSize",
-                "type": 3
             },
             {
                 "address": "0x200000f4",
-                "name": "numerrors",
-                "type": 5
-            },
-            {
-                "address": "0x200000ea",
-                "name": "RangeStatus",
-                "type": 1
-            },
-            {
-                "address": "0x200000f8",
-                "name": "readCounter",
+                "name": "htim3.Init.Period",
                 "type": 5
             },
             {
                 "address": "0x200000ec",
-                "name": "SignalRate",
-                "type": 3
+                "name": "htim3.Init.Prescaler",
+                "type": 5
             },
             {
-                "address": "0x08004588",
+                "address": "0x200000fc",
+                "name": "htim3.Init.RepetitionCounter",
+                "type": 5
+            },
+            {
+                "address": "0x200000e8",
+                "name": "htim3.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x20000124",
+                "name": "htim3.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000125",
+                "name": "htim3.State",
+                "type": 2
+            },
+            {
+                "address": "0x20000140",
+                "name": "numerrors",
+                "type": 5
+            },
+            {
+                "address": "0x20000136",
+                "name": "RangeStatus",
+                "type": 1,
+                "checked": false
+            },
+            {
+                "address": "0x20000144",
+                "name": "readCounter",
+                "type": 5
+            },
+            {
+                "address": "0x20000138",
+                "name": "SignalRate",
+                "type": 3,
+                "checked": false
+            },
+            {
+                "address": "0x080050dc",
                 "name": "status_rtn[0]",
                 "type": 1
             },
             {
-                "address": "0x20000100",
+                "address": "0x2000014c",
                 "name": "StdDev",
-                "type": 9
+                "type": 9,
+                "checked": false
             },
             {
                 "address": "0x20000000",
@@ -1136,7 +1293,7 @@
                 "checked": true
             },
             {
-                "address": "0x2000029c",
+                "address": "0x200002e8",
                 "name": "uwTick",
                 "type": 5
             },
@@ -1151,20 +1308,20 @@
                 "type": 5
             },
             {
-                "address": "0x0800452c",
+                "address": "0x08005080",
                 "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
                 "type": 1
             }
         ],
         "expand": false,
-        "filename": "test1.elf",
-        "exeModifiedTime": 1700577961107,
-        "configLastUpdate": 1700579165343
+        "filename": "F103CB_VL53L1X_proportional.elf",
+        "exeModifiedTime": 1705937389283,
+        "configLastUpdate": 1705937602538
     },
     {
-        "id": "96793839.6c8518",
+        "id": "a889fff4.f106a",
         "type": "ui_tab",
-        "name": "VL51L1X Test",
+        "name": "Test_Ranging_VL51L1X",
         "icon": "dashboard",
         "order": 1,
         "disabled": false,

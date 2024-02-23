@@ -1,22 +1,56 @@
 /**
  * @file  vl53l1_platform.h
  * @brief Those platform functions are platform dependent and have to be implemented by the user
+ *
+ * About customization
+ *      Author: mauro
+ *	rel. 2.00
+ *
+ * How to use it:
+ * Set the below configuration steps 1 to 5.
+ * then add in main.c:
+ *
+ * VL53L1__Init()
+ *
+ * to enable the device followed by
+ *
+ * VL53L1__InitGesture();
+ *
+ * if using library handling gestures and/or gesture menus.
+ *
+ * Finally add:
+ *
+ * VL53L1X_StartRanging(VL53L1__ADDR);
+ *
+ * enabling ranging before entering into main loop
+ *
+ * more info on https://www.youtube.com/playlist?list=PL6Fwy7aR3zSlArL6TJnSjWSbKmxM5BHnb
+ *
  */
  
-#include "main.h"
-
-
 #ifndef _VL53L1_PLATFORM_H_
 #define _VL53L1_PLATFORM_H_
 
+#include "main.h"
+
+
 /*||||||||||| USER/PROJECT PARAMETERS |||||||||||*/
 
-/*****************     STEP 1      *****************g
- **************** I2C communication ****************
- * set information about the I2c connection
+/*****************     STEP 1      *****************
+ *********** VL53L1X communication mode ************
+ * set information about the I2c connection:
+ * define I2c port used and the device I2C address
+ * next, if GPIO pin is connected to uC (named TOF_GPIO)
+ * uncomment the corresponding define if you are
+ * using polling mode via I2C, comment it
+ * if XSHUT pin is connected to uC (named TOF_XSHUT)
+ * uncomment the corresponding define
  ***************************************************/
-#define TOF_PORT	hi2c1			// that's the I2C port connected to VI53L1X
-#define TOF_ADDR	0x52			// the VL53L1X I2C chip address
+#define VL53L1__PORT			hi2c1	// that's the I2C port connected to VI53L1X
+#define VL53L1__ADDR			0x52	// the I2C chip address
+#define VL53L1__USING_XSHUT				// uncomment this line if XSHUT pin of VL35L1X is connected
+#define VL53L1__USING_GPIO			// uncomment this line if GPIO pin of VL35L1X is connected
+
 
 
 /*****************     STEP 2      *****************
@@ -24,9 +58,9 @@
  * these parameters set the ranging configuration
  * on the device boot
  ***************************************************/
-#define VL53L1__DISTANCE_MODE	(2)		// 1=short, 2=long
-#define VL53L1__TIMING_BUDGET	(20)	// in ms, possible values: [15 (only if DISTANCE MODE is 1), 20, 33, 50, 100, 200, 500] - that's the time for a single reading
-#define VL53L1__TB_IM_DELTA		(5)		// in ms, added to TB to get IM setting
+#define VL53L1__DISTANCE_MODE		(2)		// 1=short, 2=long
+#define VL53L1__TIMING_BUDGET		(20)	// in ms, possible values: [15 (only if DISTANCE MODE is 1), 20, 33, 50, 100, 200, 500] - that's the time for a single reading
+#define VL53L1__TB_IM_DELTA			(5)		// in ms, added to TB to get IM setting
 #define VL53L1__INTERMEASUREMENT	(VL53L1__TIMING_BUDGET + VL53L1__TB_IM_DELTA)		// in ms, it must be > = VL53L1_TIMING_BUDGET - that's the interval (including reading time) between two readings in continuous mode
 
 
@@ -63,8 +97,7 @@
  * 2= warning: low return signal level
  * 4-7 errors
  *******************************************/
-#define RANGE_STATUS_THREEESH	(2)		// acceptable values: 0,1,2,4,7
-
+#define VL53L1__RANGE_STATUS_THRESH	(2)		// acceptable values: 0,1,2,4,7
 
 /*|||||||| END OF USER/PROJECT PARAMETERS ||||||||*/
 
@@ -75,21 +108,17 @@
 
 // Reference Registers for VL53L1X
 // allowing to validate I2C connection on boot
-#define VL53L1__MODELID_INDEX	0x010F
-#define VL53L1__MODELID_VALUE	0xEA
+#define VL53L1__MODELID_INDEX		0x010F
+#define VL53L1__MODELID_VALUE		0xEA
 #define VL53L1__MODULETYPE_INDEX	0x0110
 #define VL53L1__MODULETYPE_VALUE	0xCC
-#define VL53L1__MASKREV_INDEX	0x0111
-#define VL53L1__MASKREV_VALUE	0x10
+#define VL53L1__MASKREV_INDEX		0x0111
+#define VL53L1__MASKREV_VALUE		0x10
 
-
-#define I2C_COMM_TIMEOUT		20   	// ms timeout for the I2C communication
+#define I2C_COMM_TIMEOUT			20   	// ms timeout for the I2C communication
 
 // error code returned by I/O interface functions
 #define VL53L1__IO_ERROR			( - 13)
-	/*!< error reported from IO functions */
-
-/*|||||||||||| END OF DEVICE PARAMETERS |||||||||||||*/
 
 
 /*|||||||||||||| PACKAGE PARAMETERS |||||||||||||||||*/
@@ -101,13 +130,15 @@ typedef struct {
 
 typedef VL53L1_Dev_t *VL53L1_DEV;
 
-/*|||||||||||| END OF PACKAGE PARAMETERS ||||||||||||*/
-
 
 // function declarations
-uint8_t  VL53L1__Xshut(uint8_t level);
-uint8_t  VL53L1__Init();
-uint16_t VL53L1__GetDistance(uint8_t level);
+#ifdef	VL53L1__USING_XSHUT
+uint8_t		VL53L1__Xshut(uint8_t level);
+#endif
+uint8_t  	VL53L1__Init();
+uint8_t 	VL53L1__GetDistance(uint16_t *Distance);
+uint8_t 	VL53L1__SetTimingBudget(uint16_t levelTB,uint16_t levelIM);
+uint8_t 	VL53L1__SetDistanceMode(uint16_t level);
 
 
 

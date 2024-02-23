@@ -1,0 +1,1003 @@
+[
+    {
+        "id": "8381c865.236028",
+        "type": "subflow",
+        "name": "Single value",
+        "info": "The 'single value' subflow allows to extract data from processing node.\r\n\r\n * Filter Data to extract only one variable after the \"processing node\" step .\r\n * Modify the message to fit with standard widgets such as gauges.\r\n * Limit the number of messages to a maximum of 10 msg per second.\r\n\r\n### **Input**\r\n\r\nThe subflow 'single value' takes in input the `msg.payload`\r\nfrom the processing output. All the messages sent by the processing node have the same structure.\r\n\r\n    \"payload\": {\r\n        \"groupname\": \"Snapshot2\",\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ],\r\n        \"variablename\": \"int2\"\r\n      }\r\n    }\r\n\r\n### **Filter on selected variable**\r\nSeveral messages are sent by the processing node for each variable, so the first step of this 'single value' subflow is to filter and keep only messages related to the selected variable.\r\nThe 'filter variable' node will only keep messages with the right `variablename` key.\r\n\r\n### **Extract duplets table**\r\n\r\nThe received message is an Object containing {groupname, variabledata[array], variablename}.  \r\nThe array contains two variables :\r\n - `y` the value \r\n - `x` the time\r\n\r\nA single message contains multiple pairs of values extract at a regular time interval.\r\nThe time interval depends on the acquisition frequency.\r\nWith the 'change' node and the `set` property, the `msg.payload` is set to \r\n`msg.payload.variabledata`, only the data variable array is set into msg.payload.\r\n\r\n    \"payload\": {\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ]\r\n    }\r\n\r\n### **Split duplets table**\r\n\r\nThe data variable array is split with a length of one in smaller objects by the 'split' node.\r\nEach new object contains two subvariables : `y` and `x`.\r\n\r\n    \"payload\": {\r\n        \"y\": \"9\",\r\n        \"x\": \"1567509421459\"\r\n    }\r\n\r\n\r\n### **Limit the number of messages**\r\n\r\nThe 'delay' node allows to limit the maximum number of message per second.\r\nIn the 'single value' subflow, one message is extracted per second.\r\n\r\n>_Be careful, a dashboard saturation risk exists if too many messages are received per second._\r\n\r\n### **Extract only y values**\r\n\r\nThe `msg.payload` is set to `msg.payload.y` with the `set` property. \r\nOnly `y` variable is set into msg.payload as single value.\r\n\r\n    \"payload\": { \r\n        \"y\": \"9\" \r\n    }\r\n\r\n### **Output** \r\n\r\nSome widgets such as the gauge and the text node are using the `msg.payload` property.  \r\nThe output node is linked to a gauge that allows to see the evolution \r\nof the `y` variable as a function of time.\r\n\r\n\r\n![subflow_gauge](images/subflow_gauge.png)\r\n\r\n### **Details**\r\n\r\nNote : The debug node allows to see clearly and easily the \r\nmessage at the node output.  \r\n\r\n\r\n> More details on : [Node-Red](https://nodered.org/docs/user-guide/editor/workspace/subflows)\r\n\r\n\r\n-------\r\n\r\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "3c5ffe0d.9063b2"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 780,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "66397fd3.d8111",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "varfilter",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-filter",
+                    "label": {
+                        "en-US": "Variable"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            }
+        ],
+        "color": "#3CB4E6"
+    },
+    {
+        "id": "3c5ffe0d.9063b2",
+        "type": "switch",
+        "z": "8381c865.236028",
+        "name": "filter variable",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "varfilter",
+                "vt": "env"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "4e5ba7a5.14dec8"
+            ]
+        ]
+    },
+    {
+        "id": "4e5ba7a5.14dec8",
+        "type": "change",
+        "z": "8381c865.236028",
+        "name": "keep only table of duplets",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.variabledata",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 60,
+        "wires": [
+            [
+                "42bc6ed.5b20d9"
+            ]
+        ]
+    },
+    {
+        "id": "42bc6ed.5b20d9",
+        "type": "split",
+        "z": "8381c865.236028",
+        "name": "Split a table[1..n] of duplets in n msg of single duplet",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 800,
+        "y": 60,
+        "wires": [
+            [
+                "8b8ddb84.6fb208"
+            ]
+        ]
+    },
+    {
+        "id": "8b8ddb84.6fb208",
+        "type": "delay",
+        "z": "8381c865.236028",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "66397fd3.d8111"
+            ]
+        ]
+    },
+    {
+        "id": "66397fd3.d8111",
+        "type": "change",
+        "z": "8381c865.236028",
+        "name": "keep only value and delete timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.y",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "38dd0897.a2e9e8",
+        "type": "tab",
+        "label": "TestGesture_VL53L1X",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "dec274b0.a32128",
+        "type": "ui_button",
+        "z": "38dd0897.a2e9e8",
+        "name": "",
+        "group": "8b6c60c5.4897e",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "play_arrow",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "topicType": "str",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "7976ed77.3d89e4"
+            ]
+        ]
+    },
+    {
+        "id": "69ae9212.fc81ec",
+        "type": "ui_button",
+        "z": "38dd0897.a2e9e8",
+        "name": "",
+        "group": "8b6c60c5.4897e",
+        "order": 9,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "stop",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "topicType": "str",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "7976ed77.3d89e4"
+            ]
+        ]
+    },
+    {
+        "id": "2f3056c.3c7dbaa",
+        "type": "acquisition in",
+        "z": "38dd0897.a2e9e8",
+        "name": "ST-Link",
+        "probeconfig": "53e07653.b1fdf8",
+        "x": 150,
+        "y": 520,
+        "wires": [
+            [
+                "618b5b82.5b2894"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a3a65792.544428",
+        "type": "acquisition out",
+        "z": "38dd0897.a2e9e8",
+        "name": "ST-Link",
+        "probeconfig": "53e07653.b1fdf8",
+        "x": 720,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "618b5b82.5b2894",
+        "type": "processing",
+        "z": "38dd0897.a2e9e8",
+        "groupname": "F103CB_VL53L1X_DATA",
+        "groupid": "7976ed77.3d89e4",
+        "expressions": [],
+        "statistics": [],
+        "logmode": "no",
+        "logformat": "stcm",
+        "x": 410,
+        "y": 480,
+        "wires": [
+            [
+                "67c28f89.9431d",
+                "ead88647.7a5878",
+                "5a31c732.0dc858",
+                "41b1106f.b9797"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7976ed77.3d89e4",
+        "type": "variables",
+        "z": "38dd0897.a2e9e8",
+        "groupname": "F103CB_VL53L1X_DATA",
+        "accesspoint": "0",
+        "execonfig": "3c513fe8.d5698",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "currentIM",
+        "triggerthreshold": "",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1706011313224,
+        "openStatus": true,
+        "x": 410,
+        "y": 200,
+        "wires": [
+            [
+                "a3a65792.544428"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "bda15b4a.fc2258",
+        "type": "ui_button",
+        "z": "38dd0897.a2e9e8",
+        "name": "",
+        "group": "8b6c60c5.4897e",
+        "order": 17,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 710,
+        "y": 300,
+        "wires": [
+            [
+                "523d495c.5192d8",
+                "d17d1ad.3f79de8"
+            ]
+        ]
+    },
+    {
+        "id": "523d495c.5192d8",
+        "type": "ui_chartst",
+        "z": "38dd0897.a2e9e8",
+        "group": "8b6c60c5.4897e",
+        "name": "Distance",
+        "order": 23,
+        "width": 15,
+        "height": 15,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 960,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d17d1ad.3f79de8",
+        "type": "ui_chartst",
+        "z": "38dd0897.a2e9e8",
+        "group": "8b6c60c5.4897e",
+        "name": "longClickVal",
+        "order": 22,
+        "width": 15,
+        "height": 15,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 970,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "aea8f5e3.55dc08",
+        "type": "ui_led",
+        "z": "38dd0897.a2e9e8",
+        "order": 11,
+        "group": "8b6c60c5.4897e",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "shortClick",
+        "x": 960,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "67c28f89.9431d",
+        "type": "subflow:8381c865.236028",
+        "z": "38dd0897.a2e9e8",
+        "name": "shortClick",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "shortClick",
+                "type": "str"
+            }
+        ],
+        "x": 720,
+        "y": 500,
+        "wires": [
+            [
+                "aea8f5e3.55dc08"
+            ]
+        ]
+    },
+    {
+        "id": "ead88647.7a5878",
+        "type": "switch",
+        "z": "38dd0897.a2e9e8",
+        "name": "drawing values",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "longClickVal",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "lowerlimit_V",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "upperlimit_V",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Distance",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "lowerlimit_H",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "upperlimit_H",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 740,
+        "y": 420,
+        "wires": [
+            [
+                "d17d1ad.3f79de8"
+            ],
+            [
+                "d17d1ad.3f79de8"
+            ],
+            [
+                "d17d1ad.3f79de8"
+            ],
+            [
+                "523d495c.5192d8"
+            ],
+            [
+                "523d495c.5192d8"
+            ],
+            [
+                "523d495c.5192d8"
+            ]
+        ]
+    },
+    {
+        "id": "cfe1b850.e57bd8",
+        "type": "ui_led",
+        "z": "38dd0897.a2e9e8",
+        "order": 13,
+        "group": "8b6c60c5.4897e",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "doubleClick",
+        "x": 970,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "5a31c732.0dc858",
+        "type": "subflow:8381c865.236028",
+        "z": "38dd0897.a2e9e8",
+        "name": "doubleClick",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "doubleClick",
+                "type": "str"
+            }
+        ],
+        "x": 730,
+        "y": 560,
+        "wires": [
+            [
+                "cfe1b850.e57bd8"
+            ]
+        ]
+    },
+    {
+        "id": "2cfd7973.2d9c56",
+        "type": "ui_led",
+        "z": "38dd0897.a2e9e8",
+        "order": 15,
+        "group": "8b6c60c5.4897e",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "longClick",
+        "x": 960,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "41b1106f.b9797",
+        "type": "subflow:8381c865.236028",
+        "z": "38dd0897.a2e9e8",
+        "name": "longClick",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "longClick",
+                "type": "str"
+            }
+        ],
+        "x": 720,
+        "y": 620,
+        "wires": [
+            [
+                "2cfd7973.2d9c56"
+            ]
+        ]
+    },
+    {
+        "id": "ba848f9b.3e509",
+        "type": "ui_text",
+        "z": "38dd0897.a2e9e8",
+        "group": "8b6c60c5.4897e",
+        "order": 7,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Long Click",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1130,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "152e445b.c6ea7c",
+        "type": "ui_text",
+        "z": "38dd0897.a2e9e8",
+        "group": "8b6c60c5.4897e",
+        "order": 5,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Double Click",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "x": 1130,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "2ae3611.c14039e",
+        "type": "ui_text",
+        "z": "38dd0897.a2e9e8",
+        "group": "8b6c60c5.4897e",
+        "order": 3,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Single Click",
+        "format": "",
+        "layout": "col-center",
+        "x": 1130,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "8b6c60c5.4897e",
+        "type": "ui_group",
+        "name": "Test_Gesture_VL51L1X",
+        "tab": "be5fce99.2386b",
+        "order": 1,
+        "disp": true,
+        "width": "30",
+        "collapse": false
+    },
+    {
+        "id": "53e07653.b1fdf8",
+        "type": "probe",
+        "probeid": "066BFF544856846687095720",
+        "probename": "ST-Link v2-1B (...95720)",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J43",
+        "connectionType": "tcp"
+    },
+    {
+        "id": "3c513fe8.d5698",
+        "type": "exe-config",
+        "name": "F103CB_VL53L1X_incremental",
+        "exefile": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_incremental\\Debug\\F103CB_VL53L1X_incremental.elf",
+        "exefolder": "C:\\Users\\mauro\\Documents\\STM32CubeIDE\\VL53L1X_test\\F103CB_VL53L1X_incremental\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x0800493c",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x0800494c",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000fc",
+                "name": "currentIM",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x200000f2",
+                "name": "Distance",
+                "type": 3,
+                "checked": true
+            },
+            {
+                "address": "0x200000d0",
+                "name": "distchanged",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x200000dc",
+                "name": "distchangedresidual",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x200000d4",
+                "name": "distchangedscaled",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x200000d8",
+                "name": "distchangedsmooth",
+                "type": 6,
+                "checked": true
+            },
+            {
+                "address": "0x200000f5",
+                "name": "doubleClick",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000e0",
+                "name": "GestureMenu_CurrentItem",
+                "type": 1
+            },
+            {
+                "address": "0x20000074",
+                "name": "hi2c1.Devaddress",
+                "type": 5
+            },
+            {
+                "address": "0x20000070",
+                "name": "hi2c1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x20000080",
+                "name": "hi2c1.EventCount",
+                "type": 5
+            },
+            {
+                "address": "0x20000068",
+                "name": "hi2c1.hdmarx",
+                "type": 5
+            },
+            {
+                "address": "0x20000064",
+                "name": "hi2c1.hdmatx",
+                "type": 5
+            },
+            {
+                "address": "0x20000040",
+                "name": "hi2c1.Init.AddressingMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000034",
+                "name": "hi2c1.Init.ClockSpeed",
+                "type": 5
+            },
+            {
+                "address": "0x20000044",
+                "name": "hi2c1.Init.DualAddressMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000038",
+                "name": "hi2c1.Init.DutyCycle",
+                "type": 5
+            },
+            {
+                "address": "0x2000004c",
+                "name": "hi2c1.Init.GeneralCallMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000050",
+                "name": "hi2c1.Init.NoStretchMode",
+                "type": 5
+            },
+            {
+                "address": "0x2000003c",
+                "name": "hi2c1.Init.OwnAddress1",
+                "type": 5
+            },
+            {
+                "address": "0x20000048",
+                "name": "hi2c1.Init.OwnAddress2",
+                "type": 5
+            },
+            {
+                "address": "0x20000030",
+                "name": "hi2c1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x2000006c",
+                "name": "hi2c1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000078",
+                "name": "hi2c1.Memaddress",
+                "type": 5
+            },
+            {
+                "address": "0x2000007c",
+                "name": "hi2c1.MemaddSize",
+                "type": 5
+            },
+            {
+                "address": "0x2000006e",
+                "name": "hi2c1.Mode",
+                "type": 2
+            },
+            {
+                "address": "0x20000054",
+                "name": "hi2c1.pBuffPtr",
+                "type": 5
+            },
+            {
+                "address": "0x20000060",
+                "name": "hi2c1.PreviousState",
+                "type": 5
+            },
+            {
+                "address": "0x2000006d",
+                "name": "hi2c1.State",
+                "type": 2
+            },
+            {
+                "address": "0x2000005a",
+                "name": "hi2c1.XferCount",
+                "type": 3
+            },
+            {
+                "address": "0x2000005c",
+                "name": "hi2c1.XferOptions",
+                "type": 5
+            },
+            {
+                "address": "0x20000058",
+                "name": "hi2c1.XferSize",
+                "type": 3
+            },
+            {
+                "address": "0x200000a0",
+                "name": "htim3.Channel",
+                "type": 2
+            },
+            {
+                "address": "0x200000c6",
+                "name": "htim3.ChannelNState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x200000c2",
+                "name": "htim3.ChannelState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x200000ca",
+                "name": "htim3.DMABurstState",
+                "type": 2
+            },
+            {
+                "address": "0x200000a4",
+                "name": "htim3.hdma[0]",
+                "type": 5
+            },
+            {
+                "address": "0x2000009c",
+                "name": "htim3.Init.AutoReloadPreload",
+                "type": 5
+            },
+            {
+                "address": "0x20000094",
+                "name": "htim3.Init.ClockDivision",
+                "type": 5
+            },
+            {
+                "address": "0x2000008c",
+                "name": "htim3.Init.CounterMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000090",
+                "name": "htim3.Init.Period",
+                "type": 5
+            },
+            {
+                "address": "0x20000088",
+                "name": "htim3.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "htim3.Init.RepetitionCounter",
+                "type": 5
+            },
+            {
+                "address": "0x20000084",
+                "name": "htim3.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x200000c0",
+                "name": "htim3.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x200000c1",
+                "name": "htim3.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000f6",
+                "name": "longClick",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x20000004",
+                "name": "longClickVal",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x200000fa",
+                "name": "lowerlimit_H",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x200000f8",
+                "name": "lowerlimit_V",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x200000f4",
+                "name": "shortClick",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000fe",
+                "name": "SStatus",
+                "type": 1,
+                "checked": false
+            },
+            {
+                "address": "0x08004924",
+                "name": "status_rtn[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000000",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000008",
+                "name": "upperlimit_H",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x20000006",
+                "name": "upperlimit_V",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x20000104",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000010",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x2000000c",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x080048c8",
+                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
+                "type": 1
+            }
+        ],
+        "expand": false,
+        "filename": "F103CB_VL53L1X_incremental.elf",
+        "exeModifiedTime": 1706011149773,
+        "configLastUpdate": 1706011287779
+    },
+    {
+        "id": "be5fce99.2386b",
+        "type": "ui_tab",
+        "name": "Test_Gesture_VL51L1X",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
