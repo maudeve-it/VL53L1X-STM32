@@ -1,0 +1,1590 @@
+[
+    {
+        "id": "2a4181747bebeaac",
+        "type": "subflow",
+        "name": "Single value (7)",
+        "info": "The 'single value' subflow allows to extract data from processing node.\r\n\r\n * Filter Data to extract only one variable after the \"processing node\" step .\r\n * Modify the message to fit with standard widgets such as gauges.\r\n * Limit the number of messages to a maximum of 10 msg per second.\r\n\r\n### **Input**\r\n\r\nThe subflow 'single value' takes in input the `msg.payload`\r\nfrom the processing output. All the messages sent by the processing node have the same structure.\r\n\r\n    \"payload\": {\r\n        \"groupname\": \"Snapshot2\",\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ],\r\n        \"variablename\": \"int2\"\r\n      }\r\n    }\r\n\r\n### **Filter on selected variable**\r\nSeveral messages are sent by the processing node for each variable, so the first step of this 'single value' subflow is to filter and keep only messages related to the selected variable.\r\nThe 'filter variable' node will only keep messages with the right `variablename` key.\r\n\r\n### **Extract duplets table**\r\n\r\nThe received message is an Object containing {groupname, variabledata[array], variablename}.  \r\nThe array contains two variables :\r\n - `y` the value \r\n - `x` the time\r\n\r\nA single message contains multiple pairs of values extract at a regular time interval.\r\nThe time interval depends on the acquisition frequency.\r\nWith the 'change' node and the `set` property, the `msg.payload` is set to \r\n`msg.payload.variabledata`, only the data variable array is set into msg.payload.\r\n\r\n    \"payload\": {\r\n        \"variabledata\": [\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            },\r\n            {\r\n                \"y\": \"9\",\r\n                \"x\": \"1567509421459\"\r\n            }\r\n        ]\r\n    }\r\n\r\n### **Split duplets table**\r\n\r\nThe data variable array is split with a length of one in smaller objects by the 'split' node.\r\nEach new object contains two subvariables : `y` and `x`.\r\n\r\n    \"payload\": {\r\n        \"y\": \"9\",\r\n        \"x\": \"1567509421459\"\r\n    }\r\n\r\n\r\n### **Limit the number of messages**\r\n\r\nThe 'delay' node allows to limit the maximum number of message per second.\r\nIn the 'single value' subflow, one message is extracted per second.\r\n\r\n>_Be careful, a dashboard saturation risk exists if too many messages are received per second._\r\n\r\n### **Extract only y values**\r\n\r\nThe `msg.payload` is set to `msg.payload.y` with the `set` property. \r\nOnly `y` variable is set into msg.payload as single value.\r\n\r\n    \"payload\": { \r\n        \"y\": \"9\" \r\n    }\r\n\r\n### **Output** \r\n\r\nSome widgets such as the gauge and the text node are using the `msg.payload` property.  \r\nThe output node is linked to a gauge that allows to see the evolution \r\nof the `y` variable as a function of time.\r\n\r\n\r\n![subflow_gauge](images/subflow_gauge.png)\r\n\r\n### **Details**\r\n\r\nNote : The debug node allows to see clearly and easily the \r\nmessage at the node output.  \r\n\r\n\r\n> More details on : [Node-Red](https://nodered.org/docs/user-guide/editor/workspace/subflows)\r\n\r\n\r\n-------\r\n\r\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 60,
+                "wires": [
+                    {
+                        "id": "2ba272915c84d5da"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 780,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "e5069ff792c66eaf",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "varfilter",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-filter",
+                    "label": {
+                        "en-US": "Variable"
+                    },
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "str"
+                        ]
+                    }
+                }
+            }
+        ],
+        "color": "#3CB4E6"
+    },
+    {
+        "id": "2ba272915c84d5da",
+        "type": "switch",
+        "z": "2a4181747bebeaac",
+        "name": "filter variable",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "varfilter",
+                "vt": "env"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "bc525c24c1493b0c"
+            ]
+        ]
+    },
+    {
+        "id": "bc525c24c1493b0c",
+        "type": "change",
+        "z": "2a4181747bebeaac",
+        "name": "keep only table of duplets",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.variabledata",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 60,
+        "wires": [
+            [
+                "b1e8e6b9048f5fbc"
+            ]
+        ]
+    },
+    {
+        "id": "b1e8e6b9048f5fbc",
+        "type": "split",
+        "z": "2a4181747bebeaac",
+        "name": "Split a table[1..n] of duplets in n msg of single duplet",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 800,
+        "y": 60,
+        "wires": [
+            [
+                "1ad87c4e3ec88f2d"
+            ]
+        ]
+    },
+    {
+        "id": "1ad87c4e3ec88f2d",
+        "type": "delay",
+        "z": "2a4181747bebeaac",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "outputs": 1,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "e5069ff792c66eaf"
+            ]
+        ]
+    },
+    {
+        "id": "e5069ff792c66eaf",
+        "type": "change",
+        "z": "2a4181747bebeaac",
+        "name": "keep only value and delete timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.y",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "083e6b2e7b44d782",
+        "type": "tab",
+        "label": "TestMenu_VL53L1X",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "b1fc0b758e5e9279",
+        "type": "ui_button",
+        "z": "083e6b2e7b44d782",
+        "name": "",
+        "group": "8e25b3c80e7045b0",
+        "order": 1,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "play_arrow",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "start",
+        "topicType": "str",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "80eadae371f48549"
+            ]
+        ]
+    },
+    {
+        "id": "db2180c5bbc05ea5",
+        "type": "ui_button",
+        "z": "083e6b2e7b44d782",
+        "name": "",
+        "group": "8e25b3c80e7045b0",
+        "order": 9,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "stop",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "stop",
+        "topicType": "str",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "80eadae371f48549"
+            ]
+        ]
+    },
+    {
+        "id": "8792dac2e9d3f3d8",
+        "type": "acquisition in",
+        "z": "083e6b2e7b44d782",
+        "name": "ST-Link",
+        "probeconfig": "67ef6c0357659acd",
+        "x": 150,
+        "y": 520,
+        "wires": [
+            [
+                "7140b2b31333a13c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "0f3c0f0a823c7686",
+        "type": "acquisition out",
+        "z": "083e6b2e7b44d782",
+        "name": "ST-Link",
+        "probeconfig": "67ef6c0357659acd",
+        "x": 720,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7140b2b31333a13c",
+        "type": "processing",
+        "z": "083e6b2e7b44d782",
+        "groupname": "F103CB_VL53L1X_MENU_DATA",
+        "groupid": "80eadae371f48549",
+        "expressions": [],
+        "statistics": [],
+        "logmode": "no",
+        "logformat": "stcm",
+        "x": 440,
+        "y": 480,
+        "wires": [
+            [
+                "588206c203dbdd08",
+                "55ec8fb2878c0367",
+                "b2a310035fa96489",
+                "d604c5ceb8abc41c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "80eadae371f48549",
+        "type": "variables",
+        "z": "083e6b2e7b44d782",
+        "groupname": "F103CB_VL53L1X_MENU_DATA",
+        "accesspoint": "0",
+        "execonfig": "922370e40a271e70",
+        "variablelist": [],
+        "triggerstartmode": "manual",
+        "triggername": "GestureMenu_CurrentItem",
+        "triggerthreshold": "",
+        "frequency": "",
+        "frequencyType": "0",
+        "snapshotheader": "",
+        "mode": "direct",
+        "lastImportedTime": 1708245082432,
+        "openStatus": true,
+        "x": 440,
+        "y": 200,
+        "wires": [
+            [
+                "0f3c0f0a823c7686"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5296d148f65b82f9",
+        "type": "ui_button",
+        "z": "083e6b2e7b44d782",
+        "name": "",
+        "group": "8e25b3c80e7045b0",
+        "order": 17,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Clear",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 730,
+        "y": 520,
+        "wires": [
+            [
+                "407e3edd24d92f2a",
+                "e8c16d966546473e",
+                "47950d5ec980d577",
+                "51050617bdc0930b",
+                "710dc199b0533601",
+                "016d267b73769fd4",
+                "7cfc9b2e2b5069a8",
+                "bec650e7928cf1b2"
+            ]
+        ]
+    },
+    {
+        "id": "407e3edd24d92f2a",
+        "type": "ui_chartst",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "name": "LongClick Menu Level 3",
+        "order": 46,
+        "width": 12,
+        "height": 6,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 1090,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "e8c16d966546473e",
+        "type": "ui_chartst",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "name": "LongClick Menu Level 2",
+        "order": 28,
+        "width": 12,
+        "height": 6,
+        "chartType": "line",
+        "curveType": "linear",
+        "duration": "10",
+        "ymin": "",
+        "ymax": "",
+        "x": 1090,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "588206c203dbdd08",
+        "type": "subflow:2a4181747bebeaac",
+        "z": "083e6b2e7b44d782",
+        "name": "Option1",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "option1",
+                "type": "str"
+            }
+        ],
+        "x": 720,
+        "y": 440,
+        "wires": [
+            [
+                "bec650e7928cf1b2"
+            ]
+        ]
+    },
+    {
+        "id": "55ec8fb2878c0367",
+        "type": "switch",
+        "z": "083e6b2e7b44d782",
+        "name": "drawing values",
+        "property": "payload.variablename",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "glevel1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "gll1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "gul1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "glevel2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "gll2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "gul2",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 6,
+        "x": 740,
+        "y": 340,
+        "wires": [
+            [
+                "e8c16d966546473e"
+            ],
+            [
+                "e8c16d966546473e"
+            ],
+            [
+                "e8c16d966546473e"
+            ],
+            [
+                "407e3edd24d92f2a"
+            ],
+            [
+                "407e3edd24d92f2a"
+            ],
+            [
+                "407e3edd24d92f2a"
+            ]
+        ]
+    },
+    {
+        "id": "b2a310035fa96489",
+        "type": "subflow:2a4181747bebeaac",
+        "z": "083e6b2e7b44d782",
+        "name": "Option2",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "option2",
+                "type": "str"
+            }
+        ],
+        "x": 720,
+        "y": 600,
+        "wires": [
+            [
+                "47950d5ec980d577"
+            ]
+        ]
+    },
+    {
+        "id": "d604c5ceb8abc41c",
+        "type": "subflow:2a4181747bebeaac",
+        "z": "083e6b2e7b44d782",
+        "name": "CurrentItem",
+        "env": [
+            {
+                "name": "varfilter",
+                "value": "GestureMenu_CurrentItem",
+                "type": "str"
+            }
+        ],
+        "x": 730,
+        "y": 720,
+        "wires": [
+            [
+                "51050617bdc0930b",
+                "710dc199b0533601",
+                "016d267b73769fd4",
+                "7cfc9b2e2b5069a8"
+            ]
+        ]
+    },
+    {
+        "id": "c5b4679723e2ba09",
+        "type": "ui_text",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "order": 7,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Click on Menu Level 1",
+        "format": "",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1240,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "47950d5ec980d577",
+        "type": "ui_gauge",
+        "z": "083e6b2e7b44d782",
+        "name": "",
+        "group": "8e25b3c80e7045b0",
+        "order": 47,
+        "width": 4,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Click on Menu Level 3",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "3",
+        "colors": [
+            "#ffffff",
+            "#ffffff",
+            "#ffffff"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "51050617bdc0930b",
+        "type": "ui_led",
+        "z": "083e6b2e7b44d782",
+        "order": 11,
+        "group": "8e25b3c80e7045b0",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#008000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "2",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "3",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "currentItem=0",
+        "x": 1060,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "710dc199b0533601",
+        "type": "ui_led",
+        "z": "083e6b2e7b44d782",
+        "order": 13,
+        "group": "8e25b3c80e7045b0",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "2",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "3",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "currentItem=1",
+        "x": 1060,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "016d267b73769fd4",
+        "type": "ui_led",
+        "z": "083e6b2e7b44d782",
+        "order": 31,
+        "group": "8e25b3c80e7045b0",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "2",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "3",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "currentItem=2",
+        "x": 1060,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "7cfc9b2e2b5069a8",
+        "type": "ui_led",
+        "z": "083e6b2e7b44d782",
+        "order": 49,
+        "group": "8e25b3c80e7045b0",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "1",
+                "valueType": "num"
+            },
+            {
+                "color": "#000000",
+                "value": "2",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "3",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "currentItem=3",
+        "x": 1060,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "601d195620e9ed69",
+        "type": "ui_text",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "order": 3,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Menu disabled",
+        "format": "",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1240,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "7d4620e7454a4e6c",
+        "type": "ui_text",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "order": 5,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Menu level 1",
+        "format": "",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1230,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "c227ab037b0e07a3",
+        "type": "ui_text",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "order": 26,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Menu level 2",
+        "format": "",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1230,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "9cc137046847197c",
+        "type": "ui_text",
+        "z": "083e6b2e7b44d782",
+        "group": "8e25b3c80e7045b0",
+        "order": 44,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Menu level 3",
+        "format": "",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1230,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "bec650e7928cf1b2",
+        "type": "ui_led",
+        "z": "083e6b2e7b44d782",
+        "order": 15,
+        "group": "8e25b3c80e7045b0",
+        "width": 2,
+        "height": 2,
+        "label": "",
+        "labelPlacement": "right",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#000000",
+                "value": "0",
+                "valueType": "num"
+            },
+            {
+                "color": "#008000",
+                "value": "1",
+                "valueType": "num"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "circle",
+        "showGlow": false,
+        "name": "option1=1",
+        "x": 1020,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "c2b67f3157f55696",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "c3ab33fd848ef2d2",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "eccac467d985dd07",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 6,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "6194dcdbd373c1f1",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 8,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "48cbced3e942b287",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 10,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "45db4d8e37c4a99b",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 12,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "c15d265337a0a645",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 14,
+        "width": 7,
+        "height": 1
+    },
+    {
+        "id": "b9096eeb9e826dfd",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 16,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "e9e3cb708bc3828a",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 18,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "6960fd24806a7fc6",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 19,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "67bd78243dfc1541",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 20,
+        "width": 7,
+        "height": 1
+    },
+    {
+        "id": "4607e239d818bd72",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 21,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "269fa01655c4fc98",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 22,
+        "width": 30,
+        "height": 1
+    },
+    {
+        "id": "f8e43c0f5a1b22ba",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 23,
+        "width": 30,
+        "height": 1
+    },
+    {
+        "id": "517f03b28b58a69e",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 24,
+        "width": 30,
+        "height": 1
+    },
+    {
+        "id": "58d9713baeadf23f",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 25,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "67692a92a45f4382",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 27,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "8c3d5a9b88307654",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 29,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "caaea1ed6f921c6f",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 30,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "dd656acf729999e4",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 32,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "625bc972e47c5b65",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 33,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "522b04478aff72a4",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 34,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "23a9ec41cc4e166b",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 35,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "b55cd840e5c51c0a",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 36,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "86ccbfc897b9a203",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 37,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "77b4dab6f624801c",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 38,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "21f10f79266485b5",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 39,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "2725a64ed420c36a",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 40,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "1daca0e061ca0d86",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 41,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "2d215c0c52a24710",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 42,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "407b9c864302d093",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 43,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "50e5f46c321b26ea",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 45,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "8152661ee492bda2",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 48,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "4bdb126c4dbd9a03",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 50,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "b9c446e0ad6647ec",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 51,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "542597fd80bb3950",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 52,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "42127911857d1ed6",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 53,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "5c18b525ea8e104d",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 54,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "92df6dd5c4018f10",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 55,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "e5c619755d3f104a",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 56,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "c26cc0b5181461ea",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 57,
+        "width": 14,
+        "height": 1
+    },
+    {
+        "id": "b2fa732553059c6c",
+        "type": "ui_spacer",
+        "z": "083e6b2e7b44d782",
+        "name": "spacer",
+        "group": "8e25b3c80e7045b0",
+        "order": 58,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "8e25b3c80e7045b0",
+        "type": "ui_group",
+        "name": "Test_Gesture_VL51L1X",
+        "tab": "6657d40dc19b33db",
+        "order": 1,
+        "disp": true,
+        "width": "30",
+        "collapse": false
+    },
+    {
+        "id": "67ef6c0357659acd",
+        "type": "probe",
+        "probeid": "066BFF544856846687095720",
+        "probename": "ST-Link v2-1B (...95720)",
+        "protocol": "SWD",
+        "frequency": "1.8 MHz - Default",
+        "probeproperty": "{\"SWD\":[\"4.6 MHz\",\"1.8 MHz - Default\",\"950 kHz\",\"400 kHz\",\"150 kHz\"],\"JTAG\":[\"18 MHz\",\"9 MHz\",\"4.5 MHz\",\"2.25 MHz\",\"1.12 MHz - Default\",\"560 kHz\",\"280 kHz\",\"140 kHz\"]}",
+        "probeversion": "ST Link firmware version V2.J43",
+        "connectionType": "tcp",
+        "nickname": ""
+    },
+    {
+        "id": "922370e40a271e70",
+        "type": "exe-config",
+        "name": "F103CB_VL53L1X_menu",
+        "exefile": "C:\\Users\\Mauro\\STM32CubeIDE\\Nuova\\Test_gesture_VL53L1X_incremental\\Debug\\Test_gesture_VL53L1X_incremental.elf",
+        "exefolder": "C:\\Users\\Mauro\\STM32CubeIDE\\Nuova\\Test_gesture_VL53L1X_incremental\\Debug",
+        "exevariablelist": [
+            {
+                "address": "0x08004ac0",
+                "name": "AHBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x08004ad0",
+                "name": "APBPrescTable[0]",
+                "type": 1
+            },
+            {
+                "address": "0x200000fc",
+                "name": "Distance",
+                "type": 3
+            },
+            {
+                "address": "0x200000d6",
+                "name": "GestureMenu_CurrentItem",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x20000008",
+                "name": "glevel1",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x2000000e",
+                "name": "glevel2",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x2000000a",
+                "name": "gll1",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x20000102",
+                "name": "gll2",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x2000000c",
+                "name": "gul1",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x20000010",
+                "name": "gul2",
+                "type": 4,
+                "checked": true
+            },
+            {
+                "address": "0x2000007c",
+                "name": "hi2c1.Devaddress",
+                "type": 5
+            },
+            {
+                "address": "0x20000078",
+                "name": "hi2c1.ErrorCode",
+                "type": 5
+            },
+            {
+                "address": "0x20000088",
+                "name": "hi2c1.EventCount",
+                "type": 5
+            },
+            {
+                "address": "0x20000070",
+                "name": "hi2c1.hdmarx",
+                "type": 5
+            },
+            {
+                "address": "0x2000006c",
+                "name": "hi2c1.hdmatx",
+                "type": 5
+            },
+            {
+                "address": "0x20000048",
+                "name": "hi2c1.Init.AddressingMode",
+                "type": 5
+            },
+            {
+                "address": "0x2000003c",
+                "name": "hi2c1.Init.ClockSpeed",
+                "type": 5
+            },
+            {
+                "address": "0x2000004c",
+                "name": "hi2c1.Init.DualAddressMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000040",
+                "name": "hi2c1.Init.DutyCycle",
+                "type": 5
+            },
+            {
+                "address": "0x20000054",
+                "name": "hi2c1.Init.GeneralCallMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000058",
+                "name": "hi2c1.Init.NoStretchMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000044",
+                "name": "hi2c1.Init.OwnAddress1",
+                "type": 5
+            },
+            {
+                "address": "0x20000050",
+                "name": "hi2c1.Init.OwnAddress2",
+                "type": 5
+            },
+            {
+                "address": "0x20000038",
+                "name": "hi2c1.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x20000074",
+                "name": "hi2c1.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x20000080",
+                "name": "hi2c1.Memaddress",
+                "type": 5
+            },
+            {
+                "address": "0x20000084",
+                "name": "hi2c1.MemaddSize",
+                "type": 5
+            },
+            {
+                "address": "0x20000076",
+                "name": "hi2c1.Mode",
+                "type": 2
+            },
+            {
+                "address": "0x2000005c",
+                "name": "hi2c1.pBuffPtr",
+                "type": 5
+            },
+            {
+                "address": "0x20000068",
+                "name": "hi2c1.PreviousState",
+                "type": 5
+            },
+            {
+                "address": "0x20000075",
+                "name": "hi2c1.State",
+                "type": 2
+            },
+            {
+                "address": "0x20000062",
+                "name": "hi2c1.XferCount",
+                "type": 3
+            },
+            {
+                "address": "0x20000064",
+                "name": "hi2c1.XferOptions",
+                "type": 5
+            },
+            {
+                "address": "0x20000060",
+                "name": "hi2c1.XferSize",
+                "type": 3
+            },
+            {
+                "address": "0x200000a8",
+                "name": "htim3.Channel",
+                "type": 2
+            },
+            {
+                "address": "0x200000ce",
+                "name": "htim3.ChannelNState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x200000ca",
+                "name": "htim3.ChannelState[0]",
+                "type": 2
+            },
+            {
+                "address": "0x200000d2",
+                "name": "htim3.DMABurstState",
+                "type": 2
+            },
+            {
+                "address": "0x200000ac",
+                "name": "htim3.hdma[0]",
+                "type": 5
+            },
+            {
+                "address": "0x200000a4",
+                "name": "htim3.Init.AutoReloadPreload",
+                "type": 5
+            },
+            {
+                "address": "0x2000009c",
+                "name": "htim3.Init.ClockDivision",
+                "type": 5
+            },
+            {
+                "address": "0x20000094",
+                "name": "htim3.Init.CounterMode",
+                "type": 5
+            },
+            {
+                "address": "0x20000098",
+                "name": "htim3.Init.Period",
+                "type": 5
+            },
+            {
+                "address": "0x20000090",
+                "name": "htim3.Init.Prescaler",
+                "type": 5
+            },
+            {
+                "address": "0x200000a0",
+                "name": "htim3.Init.RepetitionCounter",
+                "type": 5
+            },
+            {
+                "address": "0x2000008c",
+                "name": "htim3.Instance",
+                "type": 5
+            },
+            {
+                "address": "0x200000c8",
+                "name": "htim3.Lock",
+                "type": 2
+            },
+            {
+                "address": "0x200000c9",
+                "name": "htim3.State",
+                "type": 2
+            },
+            {
+                "address": "0x200000ff",
+                "name": "option1",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x20000100",
+                "name": "option2",
+                "type": 1,
+                "checked": true
+            },
+            {
+                "address": "0x200000fe",
+                "name": "SStatus",
+                "type": 1
+            },
+            {
+                "address": "0x08004aa8",
+                "name": "status_rtn[0]",
+                "type": 1
+            },
+            {
+                "address": "0x20000000",
+                "name": "SystemCoreClock",
+                "type": 5
+            },
+            {
+                "address": "0x20000104",
+                "name": "uwTick",
+                "type": 5
+            },
+            {
+                "address": "0x20000018",
+                "name": "uwTickFreq",
+                "type": 2
+            },
+            {
+                "address": "0x20000014",
+                "name": "uwTickPrio",
+                "type": 5
+            },
+            {
+                "address": "0x08004a4c",
+                "name": "VL51L1X_DEFAULT_CONFIGURATION[0]",
+                "type": 1
+            }
+        ],
+        "expand": false,
+        "filename": "Test_gesture_VL53L1X_incremental.elf",
+        "exeModifiedTime": 1707848321012,
+        "configLastUpdate": 1708245082053
+    },
+    {
+        "id": "6657d40dc19b33db",
+        "type": "ui_tab",
+        "name": "Test_Menu_VL51L1X",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
